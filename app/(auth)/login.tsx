@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
@@ -36,10 +37,10 @@ export default function LoginScreen() {
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
             <View style={styles.logoCircle}>
-              <Text style={styles.logoEmoji}>🔄</Text>
+              <Ionicons name="swap-horizontal" size={38} color={COLORS.white} />
             </View>
             <Text style={styles.appName}>Swap N Go</Text>
-            <Text style={styles.tagline}>Your SUI blockchain e-wallet</Text>
+            <Text style={styles.tagline}>SUI Blockchain E-Wallet</Text>
           </View>
 
           <View style={styles.card}>
@@ -98,24 +99,28 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: COLORS.white },
-  scroll: { flexGrow: 1, padding: 24, justifyContent: 'center', gap: 24 },
-  header: { alignItems: 'center', gap: 8 },
+  safe: { flex: 1, backgroundColor: COLORS.offWhite },
+  scroll: { flexGrow: 1, padding: 24, justifyContent: 'center', gap: 28 },
+  header: { alignItems: 'center', gap: 10 },
   logoCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: COLORS.green,
+    width: 84,
+    height: 84,
+    borderRadius: 42,
+    backgroundColor: COLORS.purple,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 4,
+    shadowColor: COLORS.purple,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35,
+    shadowRadius: 16,
+    elevation: 8,
   },
-  logoEmoji: { fontSize: 36 },
-  appName: { fontSize: 28, fontWeight: '800', color: COLORS.black, letterSpacing: -0.5 },
+  appName: { fontSize: 30, fontWeight: '800', color: COLORS.black, letterSpacing: -0.5 },
   tagline: { fontSize: 14, color: COLORS.gray },
   card: {
     backgroundColor: COLORS.white,
-    borderRadius: 20,
+    borderRadius: 24,
     padding: 24,
     borderWidth: 1,
     borderColor: COLORS.grayBorder,
@@ -123,7 +128,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.06,
-    shadowRadius: 12,
+    shadowRadius: 16,
     elevation: 3,
   },
   title: { fontSize: 22, fontWeight: '700', color: COLORS.black },
@@ -131,5 +136,5 @@ const styles = StyleSheet.create({
   form: { gap: 14 },
   footer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   footerText: { fontSize: 14, color: COLORS.gray },
-  footerLink: { fontSize: 14, fontWeight: '700', color: COLORS.black },
+  footerLink: { fontSize: 14, fontWeight: '700', color: COLORS.purple },
 });

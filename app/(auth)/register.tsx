@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
@@ -40,7 +41,7 @@ export default function RegisterScreen() {
 
           <View style={styles.header}>
             <View style={styles.logoCircle}>
-              <Text style={styles.logoEmoji}>✨</Text>
+              <Ionicons name="person-add" size={32} color={COLORS.white} />
             </View>
             <Text style={styles.title}>Create Account</Text>
             <Text style={styles.subtitle}>
@@ -94,8 +95,9 @@ export default function RegisterScreen() {
               />
 
               <View style={styles.note}>
+                <Ionicons name="shield-checkmark-outline" size={16} color={COLORS.purple} style={{ marginBottom: 4 }} />
                 <Text style={styles.noteText}>
-                  🔐 A SUI blockchain wallet is automatically created for your account.
+                  A SUI blockchain wallet is automatically created for your account.
                   Your JWT is stored securely in device keychain.
                 </Text>
               </View>
@@ -121,42 +123,47 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: COLORS.white },
+  safe: { flex: 1, backgroundColor: COLORS.offWhite },
   scroll: { flexGrow: 1, padding: 24, gap: 24 },
   backBtn: { alignSelf: 'flex-start', paddingVertical: 8 },
   backText: { fontSize: 15, fontWeight: '600', color: COLORS.gray },
-  header: { alignItems: 'center', gap: 8 },
+  header: { alignItems: 'center', gap: 10 },
   logoCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: COLORS.green,
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    backgroundColor: COLORS.purple,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: COLORS.purple,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35,
+    shadowRadius: 16,
+    elevation: 8,
   },
-  logoEmoji: { fontSize: 32 },
   title: { fontSize: 24, fontWeight: '800', color: COLORS.black },
   subtitle: { fontSize: 14, color: COLORS.gray, textAlign: 'center', paddingHorizontal: 16 },
   card: {
     backgroundColor: COLORS.white,
-    borderRadius: 20,
+    borderRadius: 24,
     padding: 24,
     borderWidth: 1,
     borderColor: COLORS.grayBorder,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.06,
-    shadowRadius: 12,
+    shadowRadius: 16,
     elevation: 3,
   },
   form: { gap: 14 },
   note: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.purpleDim,
     borderRadius: 12,
     padding: 14,
+    gap: 4,
   },
-  noteText: { fontSize: 13, color: '#374151', lineHeight: 18 },
+  noteText: { fontSize: 13, color: COLORS.black, lineHeight: 18 },
   footer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   footerText: { fontSize: 14, color: COLORS.gray },
-  footerLink: { fontSize: 14, fontWeight: '700', color: COLORS.black },
+  footerLink: { fontSize: 14, fontWeight: '700', color: COLORS.purple },
 });

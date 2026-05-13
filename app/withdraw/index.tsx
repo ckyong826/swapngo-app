@@ -16,7 +16,8 @@ import { Input } from '@/components/common/Input';
 import { Button } from '@/components/common/Button';
 import { withdrawSchema, WithdrawFormData } from '@/utils/validation';
 import { useInitiateWithdraw } from '@/hooks/useWithdraw';
-import { COLORS, TOKENS, TOKEN_ICONS } from '@/utils/constants';
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS, TOKENS, TOKEN_COLORS } from '@/utils/constants';
 import { TokenSymbol } from '@/types/wallet.types';
 
 type DestType = 'bank' | 'sui_wallet';
@@ -58,7 +59,7 @@ export default function WithdrawScreen() {
 
           <View style={styles.header}>
             <View style={styles.iconCircle}>
-              <Text style={styles.icon}>⬆️</Text>
+              <Ionicons name="arrow-up" size={32} color={COLORS.white} />
             </View>
             <Text style={styles.title}>Withdraw</Text>
             <Text style={styles.subtitle}>Send to your bank or external wallet</Text>
@@ -69,7 +70,7 @@ export default function WithdrawScreen() {
               style={[styles.destBtn, destType === 'bank' && styles.destBtnActive]}
               onPress={() => setDestType('bank')}
             >
-              <Text style={styles.destBtnIcon}>🏦</Text>
+              <Ionicons name="business-outline" size={20} color={destType === 'bank' ? COLORS.white : COLORS.gray} />
               <Text style={[styles.destBtnLabel, destType === 'bank' && styles.destBtnLabelActive]}>
                 Bank Account
               </Text>
@@ -78,7 +79,7 @@ export default function WithdrawScreen() {
               style={[styles.destBtn, destType === 'sui_wallet' && styles.destBtnActive]}
               onPress={() => setDestType('sui_wallet')}
             >
-              <Text style={styles.destBtnIcon}>🔵</Text>
+              <Ionicons name="wallet-outline" size={20} color={destType === 'sui_wallet' ? COLORS.white : COLORS.gray} />
               <Text style={[styles.destBtnLabel, destType === 'sui_wallet' && styles.destBtnLabelActive]}>
                 SUI Wallet
               </Text>
@@ -136,18 +137,24 @@ export default function WithdrawScreen() {
               <Text style={styles.tokenLabel}>Token</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.tokenRow}>
-                  {TOKENS.map((t) => (
-                    <TouchableOpacity
-                      key={t}
-                      onPress={() => setSelectedToken(t)}
-                      style={[styles.tokenChip, selectedToken === t && styles.tokenChipActive]}
-                    >
-                      <Text>{TOKEN_ICONS[t]}</Text>
-                      <Text style={[styles.tokenText, selectedToken === t && styles.tokenTextActive]}>
-                        {t}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
+                  {TOKENS.map((t) => {
+                    const color = TOKEN_COLORS[t] ?? COLORS.purple;
+                    const active = selectedToken === t;
+                    return (
+                      <TouchableOpacity
+                        key={t}
+                        onPress={() => setSelectedToken(t)}
+                        style={[styles.tokenChip, active && styles.tokenChipActive]}
+                      >
+                        <View style={[styles.tokenDot, { backgroundColor: color + '30' }]}>
+                          <Text style={[styles.tokenDotText, { color }]}>{t.slice(0, 3)}</Text>
+                        </View>
+                        <Text style={[styles.tokenText, active && styles.tokenTextActive]}>
+                          {t}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
                 </View>
               </ScrollView>
             </View>
@@ -181,7 +188,7 @@ export default function WithdrawScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: COLORS.white },
+  safe: { flex: 1, backgroundColor: COLORS.offWhite },
   scroll: { padding: 20, gap: 20 },
   back: { alignSelf: 'flex-start', paddingVertical: 4 },
   backText: { fontSize: 15, fontWeight: '600', color: COLORS.gray },
@@ -190,11 +197,15 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: '#fef3c7',
+    backgroundColor: COLORS.purple,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: COLORS.purple,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 6,
   },
-  icon: { fontSize: 32 },
   title: { fontSize: 24, fontWeight: '800', color: COLORS.black },
   subtitle: { fontSize: 14, color: COLORS.gray },
   destRow: { flexDirection: 'row', gap: 12 },
@@ -209,13 +220,12 @@ const styles = StyleSheet.create({
     borderColor: COLORS.grayBorder,
     backgroundColor: COLORS.white,
   },
-  destBtnActive: { backgroundColor: COLORS.green, borderColor: COLORS.greenDark },
-  destBtnIcon: { fontSize: 20 },
+  destBtnActive: { backgroundColor: COLORS.purple, borderColor: COLORS.purple },
   destBtnLabel: { fontSize: 14, fontWeight: '600', color: COLORS.gray },
-  destBtnLabelActive: { color: COLORS.black },
+  destBtnLabelActive: { color: COLORS.white },
   card: {
     backgroundColor: COLORS.white,
-    borderRadius: 20,
+    borderRadius: 24,
     padding: 20,
     borderWidth: 1,
     borderColor: COLORS.grayBorder,
@@ -232,9 +242,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1.5,
     borderColor: COLORS.grayBorder,
+    backgroundColor: COLORS.white,
   },
-  tokenChipActive: { backgroundColor: COLORS.green, borderColor: COLORS.greenDark },
+  tokenChipActive: { backgroundColor: COLORS.purpleDim, borderColor: COLORS.purple },
+  tokenDot: { width: 22, height: 22, borderRadius: 11, justifyContent: 'center', alignItems: 'center' },
+  tokenDotText: { fontSize: 8, fontWeight: '800' },
   tokenText: { fontSize: 13, fontWeight: '600', color: COLORS.gray },
-  tokenTextActive: { color: COLORS.black },
+  tokenTextActive: { color: COLORS.purple },
   symbolLabel: { fontSize: 14, fontWeight: '700', color: COLORS.gray },
 });

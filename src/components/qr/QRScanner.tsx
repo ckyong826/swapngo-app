@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { COLORS } from '@/utils/constants';
 
@@ -53,7 +54,7 @@ export function QRScanner({ onScan, onClose }: Props) {
       <View style={styles.overlay}>
         <View style={styles.topBar}>
           <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-            <Text style={styles.closeText}>✕</Text>
+            <Ionicons name="close" size={24} color={COLORS.white} />
           </TouchableOpacity>
           <Text style={styles.title}>Scan QR Code</Text>
           <View style={{ width: 40 }} />

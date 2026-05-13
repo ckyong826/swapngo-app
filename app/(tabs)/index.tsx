@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useWallet } from '@/hooks/useWallet';
 import { useTransactionHistory } from '@/hooks/useTransactionHistory';
@@ -20,10 +21,11 @@ import { COLORS } from '@/utils/constants';
 import { useQueryClient } from '@tanstack/react-query';
 
 interface QuickAction {
-  icon: string;
+  icon: keyof typeof Ionicons.glyphMap;
   label: string;
   onPress: () => void;
-  bg?: string;
+  bg: string;
+  iconColor: string;
 }
 
 export default function HomeScreen() {
@@ -41,11 +43,11 @@ export default function HomeScreen() {
   };
 
   const actions: QuickAction[] = [
-    { icon: '↗️', label: 'Send', onPress: () => router.push('/(tabs)/send'), bg: COLORS.green },
-    { icon: '📥', label: 'Receive', onPress: () => setShowQR(true), bg: '#e0f2fe' },
-    { icon: '⬇️', label: 'Deposit', onPress: () => router.push('/deposit'), bg: '#d1fae5' },
-    { icon: '⬆️', label: 'Withdraw', onPress: () => router.push('/withdraw'), bg: '#fef3c7' },
-    { icon: '🔄', label: 'Swap', onPress: () => router.push('/(tabs)/swap'), bg: '#ede9fe' },
+    { icon: 'arrow-up-outline', label: 'Send', onPress: () => router.push('/(tabs)/send'), bg: COLORS.purpleDim, iconColor: COLORS.purple },
+    { icon: 'arrow-down-outline', label: 'Receive', onPress: () => setShowQR(true), bg: '#DBEAFE', iconColor: '#2563EB' },
+    { icon: 'add-circle-outline', label: 'Deposit', onPress: () => router.push('/deposit'), bg: '#D1FAE5', iconColor: '#059669' },
+    { icon: 'remove-circle-outline', label: 'Withdraw', onPress: () => router.push('/withdraw'), bg: '#FEF3C7', iconColor: '#D97706' },
+    { icon: 'swap-horizontal-outline', label: 'Swap', onPress: () => router.push('/(tabs)/swap'), bg: COLORS.purpleDim, iconColor: COLORS.purple },
   ];
 
   return (
@@ -53,20 +55,20 @@ export default function HomeScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.black} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.purple} />
         }
         contentContainerStyle={styles.scroll}
       >
         <View style={styles.topBar}>
           <View>
-            <Text style={styles.greeting}>Good day 👋</Text>
-            <Text style={styles.subGreeting}>Swap N Go Wallet</Text>
+            <Text style={styles.greeting}>Swap N Go</Text>
+            <Text style={styles.subGreeting}>SUI Blockchain Wallet</Text>
           </View>
           <TouchableOpacity
-            style={styles.notifBtn}
+            style={styles.scanBtn}
             onPress={() => router.push('/scan')}
           >
-            <Text style={styles.notifIcon}>⬛</Text>
+            <Ionicons name="scan-outline" size={22} color={COLORS.purple} />
           </TouchableOpacity>
         </View>
 
@@ -80,8 +82,8 @@ export default function HomeScreen() {
         <View style={styles.actionsRow}>
           {actions.map((a) => (
             <TouchableOpacity key={a.label} style={styles.actionItem} onPress={a.onPress}>
-              <View style={[styles.actionCircle, { backgroundColor: a.bg ?? COLORS.green }]}>
-                <Text style={styles.actionIcon}>{a.icon}</Text>
+              <View style={[styles.actionCircle, { backgroundColor: a.bg }]}>
+                <Ionicons name={a.icon} size={24} color={a.iconColor} />
               </View>
               <Text style={styles.actionLabel}>{a.label}</Text>
             </TouchableOpacity>
@@ -128,43 +130,41 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: COLORS.white },
+  safe: { flex: 1, backgroundColor: COLORS.offWhite },
   scroll: { paddingBottom: 24, gap: 20 },
   topBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingTop: 8,
   },
-  greeting: { fontSize: 22, fontWeight: '800', color: COLORS.black },
+  greeting: { fontSize: 22, fontWeight: '800', color: COLORS.black, letterSpacing: -0.5 },
   subGreeting: { fontSize: 13, color: COLORS.gray, marginTop: 2 },
-  notifBtn: {
+  scanBtn: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.purpleDim,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  notifIcon: { fontSize: 20 },
   actionsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
   },
-  actionItem: { alignItems: 'center', gap: 6 },
+  actionItem: { alignItems: 'center', gap: 7 },
   actionCircle: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 58,
+    height: 58,
+    borderRadius: 29,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  actionIcon: { fontSize: 22 },
   actionLabel: { fontSize: 11, fontWeight: '600', color: COLORS.black },
-  section: { gap: 12, paddingHorizontal: 16 },
+  section: { gap: 12, paddingHorizontal: 20 },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   sectionTitle: { fontSize: 17, fontWeight: '700', color: COLORS.black },
-  seeAll: { fontSize: 14, fontWeight: '600', color: COLORS.gray },
+  seeAll: { fontSize: 14, fontWeight: '600', color: COLORS.purple },
 });

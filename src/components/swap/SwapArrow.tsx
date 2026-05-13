@@ -1,5 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '@/utils/constants';
 
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
 export function SwapArrow({ onPress }: Props) {
   return (
     <TouchableOpacity style={styles.btn} onPress={onPress} activeOpacity={0.8}>
-      <Text style={styles.arrow}>⇅</Text>
+      <Ionicons name="swap-vertical" size={20} color={COLORS.white} />
     </TouchableOpacity>
   );
 }
@@ -19,17 +20,16 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.purple,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
     borderWidth: 2,
     borderColor: COLORS.white,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowColor: COLORS.purple,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
-  arrow: { fontSize: 20, fontWeight: '700', color: COLORS.black },
 });

@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '@/utils/constants';
 
 interface Props extends TextInputProps {
@@ -32,7 +33,11 @@ export function Input({ label, error, rightElement, isPassword, style, ...props 
         />
         {isPassword ? (
           <TouchableOpacity onPress={() => setShowPassword((v) => !v)} style={styles.eye}>
-            <Text style={styles.eyeText}>{showPassword ? '🙈' : '👁️'}</Text>
+            <Ionicons
+              name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+              size={20}
+              color={COLORS.gray}
+            />
           </TouchableOpacity>
         ) : null}
         {rightElement && !isPassword ? (
@@ -65,7 +70,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   eye: { padding: 4 },
-  eyeText: { fontSize: 16 },
   rightEl: { marginLeft: 8 },
   error: { fontSize: 12, color: COLORS.error, marginTop: 2 },
 });

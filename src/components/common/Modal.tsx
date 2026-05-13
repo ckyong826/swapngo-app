@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '@/utils/constants';
 
 interface Props {
@@ -35,8 +36,8 @@ export function Modal({ visible, onClose, title, children }: Props) {
           {title ? (
             <View style={styles.header}>
               <Text style={styles.title}>{title}</Text>
-              <TouchableOpacity onPress={onClose}>
-                <Text style={styles.close}>✕</Text>
+              <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
+                <Ionicons name="close" size={20} color={COLORS.gray} />
               </TouchableOpacity>
             </View>
           ) : null}
@@ -80,5 +81,5 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   title: { fontSize: 18, fontWeight: '700', color: COLORS.black },
-  close: { fontSize: 16, color: COLORS.gray, padding: 4 },
+  closeBtn: { padding: 4 },
 });

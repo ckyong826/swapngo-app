@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { TokenBalance } from '@/types/wallet.types';
-import { TOKEN_ICONS, TOKEN_COLORS, COLORS } from '@/utils/constants';
+import { TOKEN_COLORS, COLORS } from '@/utils/constants';
 import { formatCrypto, formatMYR } from '@/utils/format';
 
 interface Props {
@@ -9,13 +9,13 @@ interface Props {
 }
 
 export function AssetRow({ item }: Props) {
-  const icon = TOKEN_ICONS[item.token] ?? '🪙';
-  const color = TOKEN_COLORS[item.token] ?? COLORS.gray;
+  const color = TOKEN_COLORS[item.token] ?? COLORS.purple;
+  const label = item.token.slice(0, 3);
 
   return (
     <View style={styles.row}>
-      <View style={[styles.iconCircle, { backgroundColor: color + '22' }]}>
-        <Text style={styles.icon}>{icon}</Text>
+      <View style={[styles.iconCircle, { backgroundColor: color + '18' }]}>
+        <Text style={[styles.iconText, { color }]}>{label}</Text>
       </View>
       <View style={styles.info}>
         <Text style={styles.symbol}>{item.token}</Text>
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  icon: { fontSize: 20 },
+  iconText: { fontSize: 11, fontWeight: '800', letterSpacing: 0.2 },
   info: { flex: 1 },
   symbol: { fontSize: 15, fontWeight: '700', color: COLORS.black },
   amount: { fontSize: 13, color: COLORS.gray, marginTop: 2 },

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { TransactionRecord } from '@/types/transaction.types';
 import { TransactionItem } from './TransactionItem';
 import { Skeleton } from '@/components/common/Skeleton';
@@ -35,7 +36,7 @@ export function TransactionList({ transactions, loading, emptyMessage }: Props) 
   if (!transactions.length) {
     return (
       <View style={styles.empty}>
-        <Text style={styles.emptyIcon}>📭</Text>
+        <Ionicons name="mail-open-outline" size={40} color={COLORS.grayBorder} style={{ marginBottom: 8 }} />
         <Text style={styles.emptyText}>{emptyMessage ?? 'No transactions yet'}</Text>
       </View>
     );
@@ -69,6 +70,5 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   empty: { alignItems: 'center', paddingVertical: 40 },
-  emptyIcon: { fontSize: 40, marginBottom: 8 },
   emptyText: { fontSize: 14, color: COLORS.gray },
 });

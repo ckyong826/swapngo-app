@@ -52,7 +52,7 @@ export function Button({
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={isPrimary ? COLORS.black : COLORS.black} size="small" />
+        <ActivityIndicator color={isPrimary ? COLORS.white : COLORS.black} size="small" />
       ) : (
         <Text
           style={[
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   fullWidth: { width: '100%' },
-  primary: { backgroundColor: COLORS.green },
+  primary: { backgroundColor: COLORS.purple },
   secondary: {
     backgroundColor: COLORS.white,
     borderWidth: 1.5,
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   danger: { backgroundColor: '#fee2e2' },
   disabled: { opacity: 0.5 },
   text: { fontSize: 16, fontWeight: '600', letterSpacing: 0.2 },
-  textPrimary: { color: COLORS.black },
+  textPrimary: { color: COLORS.white },
   textSecondary: { color: COLORS.black },
   textGhost: { color: COLORS.gray },
   textDanger: { color: COLORS.error },

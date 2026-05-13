@@ -4,35 +4,41 @@ export const POLLING_INTERVAL_MS = 2000;
 
 export const TOKENS: TokenSymbol[] = ['MYRC', 'USDT', 'USDC', 'BTC', 'ETH', 'SUI'];
 
-export const TOKEN_ICONS: Record<TokenSymbol, string> = {
-  MYRC: '🇲🇾',
-  USDT: '💵',
-  USDC: '💲',
-  BTC: '₿',
-  ETH: 'Ξ',
-  SUI: '🔵',
-};
-
 export const TOKEN_COLORS: Record<TokenSymbol, string> = {
-  MYRC: '#e8b4bc',
-  USDT: '#26a17b',
-  USDC: '#2775ca',
-  BTC: '#f7931a',
-  ETH: '#627eea',
-  SUI: '#6fbcf0',
+  MYRC: '#E11D48',
+  USDT: '#26A17B',
+  USDC: '#2775CA',
+  BTC: '#F7931A',
+  ETH: '#627EEA',
+  SUI: '#4DA2FF',
 };
 
 export const COLORS = {
-  white: '#ffffff',
-  green: '#f2fed0',
-  greenDark: '#d4f5a0',
-  black: '#0a0a0a',
-  gray: '#6b7280',
-  grayLight: '#f9fafb',
-  grayBorder: '#e5e7eb',
-  success: '#22c55e',
-  error: '#ef4444',
-  warning: '#f59e0b',
-  pending: '#f59e0b',
-  processing: '#3b82f6',
+  // Brand purple (primary)
+  purple: '#7C3AED',
+  purpleLight: '#A78BFA',
+  purpleDim: '#EDE9FE',
+  purpleDark: '#1C0A3A',
+  purpleCard: '#2D1B69',
+
+  // Legacy aliases — mapped to purple palette so existing consumers auto-update
+  green: '#EDE9FE',       // was lime green, now soft purple tint
+  greenDark: '#C4B5FD',   // was darker green, now medium purple
+
+  // Base
+  white: '#FFFFFF',
+  offWhite: '#F7F5FF',
+  black: '#0F0A1A',
+
+  // Text / surface
+  gray: '#6B6B8A',
+  grayLight: '#F5F4FF',
+  grayBorder: '#E4E2F0',
+
+  // Semantic
+  success: '#10B981',
+  error: '#EF4444',
+  warning: '#F59E0B',
+  pending: '#F59E0B',
+  processing: '#3B82F6',
 };

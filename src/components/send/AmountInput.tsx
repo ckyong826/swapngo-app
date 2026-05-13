@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Input } from '@/components/common/Input';
-import { COLORS, TOKENS, TOKEN_ICONS } from '@/utils/constants';
+import { COLORS, TOKENS, TOKEN_COLORS } from '@/utils/constants';
 import { TokenSymbol } from '@/types/wallet.types';
 
 interface Props {
@@ -17,18 +17,22 @@ export function AmountInput({ amount, onAmountChange, token, onTokenChange, amou
     <View style={styles.container}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tokenScroll}>
         <View style={styles.tokenRow}>
-          {TOKENS.map((t) => (
-            <TouchableOpacity
-              key={t}
-              onPress={() => onTokenChange(t)}
-              style={[styles.tokenChip, t === token && styles.tokenChipActive]}
-            >
-              <Text style={styles.tokenIcon}>{TOKEN_ICONS[t]}</Text>
-              <Text style={[styles.tokenLabel, t === token && styles.tokenLabelActive]}>
-                {t}
-              </Text>
-            </TouchableOpacity>
-          ))}
+          {TOKENS.map((t) => {
+            const color = TOKEN_COLORS[t] ?? COLORS.purple;
+            const active = t === token;
+            return (
+              <TouchableOpacity
+                key={t}
+                onPress={() => onTokenChange(t)}
+                style={[styles.tokenChip, active && styles.tokenChipActive]}
+              >
+                <View style={[styles.tokenDot, { backgroundColor: color + '25' }]}>
+                  <Text style={[styles.tokenDotText, { color }]}>{t.slice(0, 3)}</Text>
+                </View>
+                <Text style={[styles.tokenLabel, active && styles.tokenLabelActive]}>{t}</Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </ScrollView>
       <Input
@@ -60,11 +64,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   tokenChipActive: {
-    backgroundColor: COLORS.green,
-    borderColor: COLORS.greenDark,
+    backgroundColor: COLORS.purpleDim,
+    borderColor: COLORS.purple,
   },
-  tokenIcon: { fontSize: 14 },
+  tokenDot: { width: 22, height: 22, borderRadius: 11, justifyContent: 'center', alignItems: 'center' },
+  tokenDotText: { fontSize: 8, fontWeight: '800' },
   tokenLabel: { fontSize: 13, fontWeight: '600', color: COLORS.gray },
-  tokenLabelActive: { color: COLORS.black },
+  tokenLabelActive: { color: COLORS.purple },
   symbol: { fontSize: 14, fontWeight: '700', color: COLORS.gray },
 });

@@ -80,7 +80,7 @@ export default function HistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: COLORS.white },
+  safe: { flex: 1, backgroundColor: COLORS.offWhite },
   header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 8 },
   title: { fontSize: 26, fontWeight: '800', color: COLORS.black },
   count: { fontSize: 13, color: COLORS.gray, marginTop: 2 },
@@ -100,10 +100,10 @@ const styles = StyleSheet.create({
     borderColor: COLORS.grayBorder,
   },
   filterChipActive: {
-    backgroundColor: COLORS.green,
-    borderColor: COLORS.greenDark,
+    backgroundColor: COLORS.purple,
+    borderColor: COLORS.purple,
   },
   filterLabel: { fontSize: 13, fontWeight: '600', color: COLORS.gray },
-  filterLabelActive: { color: COLORS.black },
+  filterLabelActive: { color: COLORS.white },
   list: { padding: 20, paddingTop: 8 },
 });

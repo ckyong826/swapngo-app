@@ -79,8 +79,8 @@ export default function DepositScreen() {
             />
 
             <View style={styles.infoBox}>
-              <Text style={styles.infoText}>🔐 Powered by Billplz — secure Malaysian payment gateway</Text>
-              <Text style={styles.infoText}>⛓️ MYRC is 1:1 pegged to MYR, settled on SUI blockchain</Text>
+              <Text style={styles.infoText}>Powered by Billplz — secure Malaysian payment gateway</Text>
+              <Text style={styles.infoText}>MYRC is 1:1 pegged to MYR, settled on SUI blockchain</Text>
             </View>
 
             <Button

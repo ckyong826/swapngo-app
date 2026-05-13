@@ -134,13 +134,13 @@ export default function SwapScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: COLORS.white },
+  safe: { flex: 1, backgroundColor: COLORS.offWhite },
   scroll: { padding: 20, gap: 20 },
   title: { fontSize: 26, fontWeight: '800', color: COLORS.black },
   subtitle: { fontSize: 14, color: COLORS.gray, marginTop: -12 },
   swapCard: {
     backgroundColor: COLORS.white,
-    borderRadius: 20,
+    borderRadius: 24,
     padding: 20,
     borderWidth: 1,
     borderColor: COLORS.grayBorder,
@@ -163,9 +163,9 @@ const styles = StyleSheet.create({
   confirmLabel: { fontSize: 14, color: COLORS.gray },
   confirmValue: { fontSize: 15, fontWeight: '700', color: COLORS.black },
   note: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.purpleDim,
     borderRadius: 12,
     padding: 14,
   },
-  noteText: { fontSize: 13, color: '#374151', lineHeight: 18 },
+  noteText: { fontSize: 13, color: COLORS.black, lineHeight: 18 },
 });

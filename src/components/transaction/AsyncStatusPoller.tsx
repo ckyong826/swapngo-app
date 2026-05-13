@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Linking,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { FsmStatus } from '@/types/fsm.types';
 import { COLORS } from '@/utils/constants';
 import { suiExplorerTxUrl } from '@/utils/sui';
@@ -33,7 +34,7 @@ export function AsyncStatusPoller({
   if (isLoading || !status) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color={COLORS.black} />
+        <ActivityIndicator size="large" color={COLORS.purple} />
         <Text style={styles.loadingText}>Loading status...</Text>
       </View>
     );
@@ -43,7 +44,7 @@ export function AsyncStatusPoller({
     return (
       <View style={styles.center}>
         <View style={styles.pulseCircle}>
-          <ActivityIndicator size="large" color={COLORS.black} />
+          <ActivityIndicator size="large" color={COLORS.purple} />
         </View>
         <StatusBadge status={status} />
         <Text style={styles.title}>Processing on SUI Blockchain</Text>
@@ -61,7 +62,7 @@ export function AsyncStatusPoller({
     return (
       <View style={styles.center}>
         <View style={styles.successCircle}>
-          <Text style={styles.successIcon}>✓</Text>
+          <Ionicons name="checkmark-circle" size={48} color="#059669" />
         </View>
         <StatusBadge status="completed" />
         <Text style={styles.title}>Transaction Complete</Text>
@@ -74,7 +75,7 @@ export function AsyncStatusPoller({
             <Text style={styles.hash} numberOfLines={1}>
               {suiTxHash.slice(0, 20)}...
             </Text>
-            <Text style={styles.openLink}>↗</Text>
+            <Ionicons name="open-outline" size={14} color={COLORS.purple} />
           </TouchableOpacity>
         ) : null}
         {createdAt ? (
@@ -87,7 +88,7 @@ export function AsyncStatusPoller({
   return (
     <View style={styles.center}>
       <View style={styles.errorCircle}>
-        <Text style={styles.errorIcon}>✕</Text>
+        <Ionicons name="close-circle" size={48} color="#DC2626" />
       </View>
       <StatusBadge status="failed" />
       <Text style={styles.title}>Transaction Failed</Text>
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.purpleDim,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
@@ -118,22 +119,20 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#d1fae5',
+    backgroundColor: '#D1FAE5',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
   },
-  successIcon: { fontSize: 36, color: '#065f46', fontWeight: '700' },
   errorCircle: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#fee2e2',
+    backgroundColor: '#FEE2E2',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
   },
-  errorIcon: { fontSize: 36, color: '#991b1b', fontWeight: '700' },
   loadingText: { fontSize: 14, color: COLORS.gray },
   title: { fontSize: 20, fontWeight: '700', color: COLORS.black, textAlign: 'center' },
   subtitle: {
@@ -147,16 +146,15 @@ const styles = StyleSheet.create({
   hashRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.purpleDim,
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 12,
     gap: 6,
     maxWidth: '90%',
   },
-  hashLabel: { fontSize: 12, fontWeight: '700', color: COLORS.black },
-  hash: { flex: 1, fontSize: 12, color: '#374151', fontFamily: 'monospace' },
-  openLink: { fontSize: 16, fontWeight: '700', color: COLORS.black },
+  hashLabel: { fontSize: 12, fontWeight: '700', color: COLORS.purple },
+  hash: { flex: 1, fontSize: 12, color: COLORS.black, fontFamily: 'monospace' },
   errorMsg: {
     fontSize: 13,
     color: COLORS.error,
@@ -164,11 +162,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   retryBtn: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.purple,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 12,
     marginTop: 8,
   },
-  retryText: { fontSize: 15, fontWeight: '600', color: COLORS.black },
+  retryText: { fontSize: 15, fontWeight: '600', color: COLORS.white },
 });
