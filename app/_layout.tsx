@@ -9,6 +9,7 @@ import { StatusBar } from 'expo-status-bar';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { useUIStore } from '@/stores/ui.store';
 import { COLORS } from '@/utils/constants';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 function Toast() {
   const toast = useUIStore((s) => s.toast);
@@ -65,10 +66,12 @@ function RootLayoutNav() {
 export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <QueryClientProvider client={queryClient}>
-        <StatusBar style="dark" />
-        <RootLayoutNav />
-      </QueryClientProvider>
+      <SafeAreaProvider>
+        <QueryClientProvider client={queryClient}>
+          <StatusBar style="dark" />
+          <RootLayoutNav />
+        </QueryClientProvider>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }

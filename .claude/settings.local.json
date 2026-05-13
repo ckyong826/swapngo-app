@@ -55,7 +55,9 @@
       "Bash(node -e \"const chunks=[]; process.stdin.on\\('data',c=>chunks.push\\(c\\)\\); process.stdin.on\\('end',\\(\\)=>{const v=JSON.parse\\(Buffer.concat\\(chunks\\).toString\\(\\)\\); console.log\\(v.filter\\(x=>x.startsWith\\('4.'\\)&&!x.includes\\('-'\\)\\).join\\('\\\\n'\\)\\);}\\)\")",
       "Bash(node -e \"const chunks=[]; process.stdin.on\\('data',c=>chunks.push\\(c\\)\\); process.stdin.on\\('end',\\(\\)=>{const p=JSON.parse\\(Buffer.concat\\(chunks\\).toString\\(\\)\\); console.log\\('peerDeps:', JSON.stringify\\(p.peerDependencies,null,2\\)\\); console.log\\('deps worklets:', p.dependencies?.['react-native-worklets']\\);}\\)\")",
       "Bash(node -e \"const api={cache:\\(\\)=>{}}; const plugin=require\\('./node_modules/nativewind/babel'\\); const result=plugin\\(api\\); console.log\\('keys:', Object.keys\\(result||{}\\)\\); console.log\\('has worklets:', JSON.stringify\\(result\\).includes\\('worklets'\\)\\);\")",
-      "Bash(node -e \"const api={cache:\\(\\)=>{},assertVersion:\\(\\)=>{}}; try{require\\('./node_modules/babel-preset-expo/build/index.js'\\)\\(api,{jsxImportSource:'nativewind'}\\); console.log\\('babel-preset-expo: OK'\\);}catch\\(e\\){console.log\\('ERROR:', e.message\\);}\")"
+      "Bash(node -e \"const api={cache:\\(\\)=>{},assertVersion:\\(\\)=>{}}; try{require\\('./node_modules/babel-preset-expo/build/index.js'\\)\\(api,{jsxImportSource:'nativewind'}\\); console.log\\('babel-preset-expo: OK'\\);}catch\\(e\\){console.log\\('ERROR:', e.message\\);}\")",
+      "Bash(findstr -i \".env\")",
+      "PowerShell(Get-ChildItem \"D:\\\\UTM folder\\\\FYP\\\\Swap N Go\\\\swapngo-app\" -Force | ForEach-Object { $_.Name })"
     ]
   }
 }

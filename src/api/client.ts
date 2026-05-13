@@ -17,12 +17,26 @@ apiClient.interceptors.request.use(async (config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  console.log(`[API →] ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`, {
+    data: config.data,
+    hasToken: !!token,
+  });
   return config;
 });
 
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log(`[API ←] ${response.status} ${response.config.method?.toUpperCase()} ${response.config.url}`, {
+      data: response.data,
+    });
+    return response;
+  },
   async (error) => {
+    console.error(`[API ✕] ${error.config?.method?.toUpperCase()} ${error.config?.baseURL}${error.config?.url}`, {
+      status: error.response?.status,
+      message: error.response?.data?.message ?? error.message,
+      isNetworkError: !error.response,
+    });
     if (error.response?.status === 401) {
       await storageService.deleteToken();
       router.replace('/(auth)/login');
