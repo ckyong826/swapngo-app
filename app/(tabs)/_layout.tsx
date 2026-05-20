@@ -2,12 +2,14 @@ import React, { useEffect } from 'react';
 import { Tabs } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/auth.store';
 import { router } from 'expo-router';
 import { COLORS } from '@/utils/constants';
 
 export default function TabsLayout() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -19,7 +21,7 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: [styles.tabBar, { height: 60 + insets.bottom, paddingBottom: 8 + insets.bottom }],
         tabBarActiveTintColor: COLORS.purple,
         tabBarInactiveTintColor: COLORS.gray,
         tabBarLabelStyle: styles.label,
@@ -79,8 +81,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderTopWidth: 1,
     borderTopColor: COLORS.grayBorder,
-    height: 72,
-    paddingBottom: 12,
     paddingTop: 8,
   },
   label: { fontSize: 11, fontWeight: '600', marginTop: 2 },

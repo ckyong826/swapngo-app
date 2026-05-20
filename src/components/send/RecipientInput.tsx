@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { Input } from '@/components/common/Input';
 import { COLORS } from '@/utils/constants';
@@ -24,7 +25,7 @@ export function RecipientInput({ value, onChange, error }: Props) {
             onPress={() => router.push('/scan')}
             style={styles.scanBtn}
           >
-            <Text style={styles.scanIcon}>⬛</Text>
+            <Ionicons name="qr-code-outline" size={20} color={COLORS.purple} />
           </TouchableOpacity>
         }
       />
@@ -39,5 +40,4 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.green,
     borderRadius: 8,
   },
-  scanIcon: { fontSize: 18 },
 });

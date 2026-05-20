@@ -7,7 +7,7 @@ interface AuthStore {
   accessToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  setToken: (token: string) => void;
+  setToken: (token: string) => Promise<void>;
   loadToken: () => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -17,8 +17,8 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   isAuthenticated: false,
   isLoading: true,
 
-  setToken: (token) => {
-    storageService.setToken(token);
+  setToken: async (token) => {
+    await storageService.setToken(token);
     wsService.connect(token);
     set({ accessToken: token, isAuthenticated: true });
   },

@@ -10,8 +10,8 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: authApi.login,
-    onSuccess: (data) => {
-      setToken(data.access_token);
+    onSuccess: async (data) => {
+      await setToken(data.access_token);
       router.replace('/(tabs)');
     },
     onError: (err: { message: string }) => {

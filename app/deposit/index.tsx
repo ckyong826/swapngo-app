@@ -14,6 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
 import { Input } from '@/components/common/Input';
 import { Button } from '@/components/common/Button';
+import { TokenIcon } from '@/components/common/TokenIcon';
 import { depositSchema, DepositFormData } from '@/utils/validation';
 import { useInitiateDeposit } from '@/hooks/useDeposit';
 import { COLORS } from '@/utils/constants';
@@ -21,7 +22,7 @@ import { COLORS } from '@/utils/constants';
 export default function DepositScreen() {
   const { mutate: initiate, isPending } = useInitiateDeposit();
 
-  const { control, handleSubmit, formState: { errors } } = useForm<DepositFormData>({
+  const { control, handleSubmit, setValue, formState: { errors } } = useForm<DepositFormData>({
     resolver: zodResolver(depositSchema),
   });
 
@@ -43,9 +44,7 @@ export default function DepositScreen() {
           </TouchableOpacity>
 
           <View style={styles.header}>
-            <View style={styles.iconCircle}>
-              <Text style={styles.icon}>⬇️</Text>
-            </View>
+            <TokenIcon token="MYRC" size={72} />
             <Text style={styles.title}>Deposit MYRC</Text>
             <Text style={styles.subtitle}>
               Pay via Billplz. MYRC is minted to your SUI wallet on confirmation.
@@ -56,9 +55,13 @@ export default function DepositScreen() {
             <Text style={styles.cardLabel}>Quick amounts</Text>
             <View style={styles.presetRow}>
               {presets.map((p) => (
-                <View key={p} style={styles.presetChip}>
+                <TouchableOpacity
+                  key={p}
+                  style={styles.presetChip}
+                  onPress={() => setValue('amount_myr', String(p), { shouldValidate: true })}
+                >
                   <Text style={styles.presetText}>RM {p}</Text>
-                </View>
+                </TouchableOpacity>
               ))}
             </View>
 
@@ -101,15 +104,6 @@ const styles = StyleSheet.create({
   back: { alignSelf: 'flex-start', paddingVertical: 4 },
   backText: { fontSize: 15, fontWeight: '600', color: COLORS.gray },
   header: { alignItems: 'center', gap: 8 },
-  iconCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: COLORS.green,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  icon: { fontSize: 32 },
   title: { fontSize: 24, fontWeight: '800', color: COLORS.black },
   subtitle: { fontSize: 14, color: COLORS.gray, textAlign: 'center', lineHeight: 20 },
   card: {

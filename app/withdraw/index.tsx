@@ -17,8 +17,9 @@ import { Button } from '@/components/common/Button';
 import { withdrawSchema, WithdrawFormData } from '@/utils/validation';
 import { useInitiateWithdraw } from '@/hooks/useWithdraw';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, TOKENS, TOKEN_COLORS } from '@/utils/constants';
+import { COLORS, TOKENS } from '@/utils/constants';
 import { TokenSymbol } from '@/types/wallet.types';
+import { TokenIcon } from '@/components/common/TokenIcon';
 
 type DestType = 'bank' | 'sui_wallet';
 
@@ -138,7 +139,6 @@ export default function WithdrawScreen() {
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.tokenRow}>
                   {TOKENS.map((t) => {
-                    const color = TOKEN_COLORS[t] ?? COLORS.purple;
                     const active = selectedToken === t;
                     return (
                       <TouchableOpacity
@@ -146,9 +146,7 @@ export default function WithdrawScreen() {
                         onPress={() => setSelectedToken(t)}
                         style={[styles.tokenChip, active && styles.tokenChipActive]}
                       >
-                        <View style={[styles.tokenDot, { backgroundColor: color + '30' }]}>
-                          <Text style={[styles.tokenDotText, { color }]}>{t.slice(0, 3)}</Text>
-                        </View>
+                        <TokenIcon token={t} size={22} />
                         <Text style={[styles.tokenText, active && styles.tokenTextActive]}>
                           {t}
                         </Text>
@@ -245,8 +243,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   tokenChipActive: { backgroundColor: COLORS.purpleDim, borderColor: COLORS.purple },
-  tokenDot: { width: 22, height: 22, borderRadius: 11, justifyContent: 'center', alignItems: 'center' },
-  tokenDotText: { fontSize: 8, fontWeight: '800' },
   tokenText: { fontSize: 13, fontWeight: '600', color: COLORS.gray },
   tokenTextActive: { color: COLORS.purple },
   symbolLabel: { fontSize: 14, fontWeight: '700', color: COLORS.gray },

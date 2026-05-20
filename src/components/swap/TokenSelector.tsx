@@ -9,23 +9,15 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, TOKENS, TOKEN_COLORS } from '@/utils/constants';
+import { COLORS, TOKENS } from '@/utils/constants';
 import { TokenSymbol } from '@/types/wallet.types';
+import { TokenIcon } from '@/components/common/TokenIcon';
 
 interface Props {
   label: string;
   value: TokenSymbol;
   onChange: (t: TokenSymbol) => void;
   exclude?: TokenSymbol;
-}
-
-function TokenBadge({ token, size = 32 }: { token: TokenSymbol; size?: number }) {
-  const color = TOKEN_COLORS[token] ?? COLORS.purple;
-  return (
-    <View style={[styles.tokenBadge, { width: size, height: size, borderRadius: size / 2, backgroundColor: color + '18' }]}>
-      <Text style={[styles.tokenBadgeText, { color, fontSize: size * 0.33 }]}>{token.slice(0, 3)}</Text>
-    </View>
-  );
 }
 
 export function TokenSelector({ label, value, onChange, exclude }: Props) {
@@ -37,7 +29,7 @@ export function TokenSelector({ label, value, onChange, exclude }: Props) {
       <View style={styles.container}>
         <Text style={styles.label}>{label}</Text>
         <TouchableOpacity style={styles.selector} onPress={() => setOpen(true)}>
-          <TokenBadge token={value} size={34} />
+          <TokenIcon token={value} size={34} />
           <Text style={styles.symbol}>{value}</Text>
           <Ionicons name="chevron-down" size={16} color={COLORS.gray} />
         </TouchableOpacity>
@@ -58,7 +50,7 @@ export function TokenSelector({ label, value, onChange, exclude }: Props) {
                   setOpen(false);
                 }}
               >
-                <TokenBadge token={item} size={38} />
+                <TokenIcon token={item} size={38} />
                 <Text style={styles.optionText}>{item}</Text>
                 {item === value && (
                   <Ionicons name="checkmark-circle" size={20} color={COLORS.purple} />
@@ -85,8 +77,6 @@ const styles = StyleSheet.create({
     padding: 14,
     gap: 10,
   },
-  tokenBadge: { justifyContent: 'center', alignItems: 'center' },
-  tokenBadgeText: { fontWeight: '800', letterSpacing: 0.2 },
   symbol: { flex: 1, fontSize: 16, fontWeight: '700', color: COLORS.black },
   overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)' },
   sheet: {

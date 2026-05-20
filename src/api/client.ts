@@ -26,6 +26,9 @@ apiClient.interceptors.request.use(async (config) => {
 
 apiClient.interceptors.response.use(
   (response) => {
+    if (response.data?.success === true && 'data' in response.data) {
+      response.data = response.data.data;
+    }
     console.log(`[API ←] ${response.status} ${response.config.method?.toUpperCase()} ${response.config.url}`, {
       data: response.data,
     });

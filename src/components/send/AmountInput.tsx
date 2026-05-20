@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Input } from '@/components/common/Input';
-import { COLORS, TOKENS, TOKEN_COLORS } from '@/utils/constants';
+import { COLORS, TOKENS } from '@/utils/constants';
 import { TokenSymbol } from '@/types/wallet.types';
+import { TokenIcon } from '@/components/common/TokenIcon';
 
 interface Props {
   amount: string;
@@ -18,7 +19,6 @@ export function AmountInput({ amount, onAmountChange, token, onTokenChange, amou
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tokenScroll}>
         <View style={styles.tokenRow}>
           {TOKENS.map((t) => {
-            const color = TOKEN_COLORS[t] ?? COLORS.purple;
             const active = t === token;
             return (
               <TouchableOpacity
@@ -26,9 +26,7 @@ export function AmountInput({ amount, onAmountChange, token, onTokenChange, amou
                 onPress={() => onTokenChange(t)}
                 style={[styles.tokenChip, active && styles.tokenChipActive]}
               >
-                <View style={[styles.tokenDot, { backgroundColor: color + '25' }]}>
-                  <Text style={[styles.tokenDotText, { color }]}>{t.slice(0, 3)}</Text>
-                </View>
+                <TokenIcon token={t} size={22} />
                 <Text style={[styles.tokenLabel, active && styles.tokenLabelActive]}>{t}</Text>
               </TouchableOpacity>
             );
@@ -67,8 +65,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.purpleDim,
     borderColor: COLORS.purple,
   },
-  tokenDot: { width: 22, height: 22, borderRadius: 11, justifyContent: 'center', alignItems: 'center' },
-  tokenDotText: { fontSize: 8, fontWeight: '800' },
   tokenLabel: { fontSize: 13, fontWeight: '600', color: COLORS.gray },
   tokenLabelActive: { color: COLORS.purple },
   symbol: { fontSize: 14, fontWeight: '700', color: COLORS.gray },

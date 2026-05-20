@@ -13,6 +13,11 @@ export const depositApi = {
       data
     ).then((r) => r.data),
 
+  simulatePaid: (id: string) =>
+    apiClient.post<{ message: string; data: { status: string } }>(
+      `${PRIVATE}/deposit/${id}/simulate-paid`
+    ).then((r) => r.data),
+
   getStatus: (id: string) =>
     apiClient.get<DepositRecord>(`${PRIVATE}/deposit/${id}`).then((r) => r.data),
 

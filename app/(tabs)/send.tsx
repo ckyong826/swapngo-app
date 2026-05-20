@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useLocalSearchParams } from 'expo-router';
 import { RecipientInput } from '@/components/send/RecipientInput';
 import { AmountInput } from '@/components/send/AmountInput';
 import { ConfirmSheet } from '@/components/send/ConfirmSheet';
@@ -23,11 +24,18 @@ export default function SendScreen() {
   const [selectedToken, setSelectedToken] = useState<TokenSymbol>('MYRC');
   const [showConfirm, setShowConfirm] = useState(false);
   const { mutate: initiate, isPending } = useInitiateTransfer();
+  const { recipient: scannedRecipient } = useLocalSearchParams<{ recipient?: string }>();
 
-  const { control, handleSubmit, watch, formState: { errors } } = useForm<TransferFormData>({
+  const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm<TransferFormData>({
     resolver: zodResolver(transferSchema),
     defaultValues: { token: 'MYRC', recipient: '', amount: '' },
   });
+
+  useEffect(() => {
+    if (scannedRecipient) {
+      setValue('recipient', scannedRecipient, { shouldValidate: true });
+    }
+  }, [scannedRecipient]);
 
   const recipientVal = watch('recipient');
   const amountVal = watch('amount');
