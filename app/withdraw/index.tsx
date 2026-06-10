@@ -20,6 +20,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, TOKENS } from '@/utils/constants';
 import { TokenSymbol } from '@/types/wallet.types';
 import { TokenIcon } from '@/components/common/TokenIcon';
+import { KYCGateBanner } from '@/components/common/KYCGateBanner';
 
 type DestType = 'bank' | 'sui_wallet';
 
@@ -49,6 +50,7 @@ export default function WithdrawScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
+      <KYCGateBanner>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
@@ -181,6 +183,7 @@ export default function WithdrawScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      </KYCGateBanner>
     </SafeAreaView>
   );
 }

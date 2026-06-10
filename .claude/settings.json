@@ -6,7 +6,8 @@
       "PowerShell(if \\(-not $?\\) { \"no nvm\" })",
       "PowerShell(node --version)",
       "PowerShell(ls \"d:\\\\UTM folder\\\\FYP\\\\Swap N Go\\\\swapngo-app\\\\src\\\\hooks\\\\\")",
-      "PowerShell(ls \"d:\\\\UTM folder\\\\FYP\\\\Swap N Go\\\\swapngo-app\\\\src\\\\api\\\\\")"
+      "PowerShell(ls \"d:\\\\UTM folder\\\\FYP\\\\Swap N Go\\\\swapngo-app\\\\src\\\\api\\\\\")",
+      "Bash(xargs grep -ln \"user\\\\|me\" -i)"
     ]
   }
 }

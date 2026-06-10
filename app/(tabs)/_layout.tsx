@@ -6,10 +6,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/auth.store';
 import { router } from 'expo-router';
 import { COLORS } from '@/utils/constants';
+import { useNotification } from '@/hooks/useNotification';
 
 export default function TabsLayout() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const insets = useSafeAreaInsets();
+
+  // Listen for server-pushed transaction notifications via WebSocket
+  useNotification();
 
   useEffect(() => {
     if (!isAuthenticated) {

@@ -8,9 +8,18 @@ export interface RegisterRequest {
   password: string;
 }
 
+export interface UserInfo {
+  id: string;
+  username: string;
+  email: string;
+  phone_number: string;
+  role: string;
+}
+
 export interface LoginResponse {
   access_token: string;
   refresh_token: string;
+  user: UserInfo;
 }
 
 export interface RegisterResponse {

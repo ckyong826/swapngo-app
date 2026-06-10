@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { env } from '@/config/env';
 import { storageService } from '@/services/storage.service';
-import { router } from 'expo-router';
+import { useAuthStore } from '@/stores/auth.store';
 
 export const PUBLIC = '/api/v1/public';
 export const PRIVATE = '/api/v1/private';
@@ -41,8 +41,7 @@ apiClient.interceptors.response.use(
       isNetworkError: !error.response,
     });
     if (error.response?.status === 401) {
-      await storageService.deleteToken();
-      router.replace('/(auth)/login');
+      await useAuthStore.getState().logout();
     }
     const message: string =
       error.response?.data?.message ?? error.message ?? 'An error occurred';

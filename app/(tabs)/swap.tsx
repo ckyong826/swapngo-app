@@ -19,6 +19,7 @@ import { usePriceSocket } from '@/hooks/usePriceSocket';
 import { TokenSymbol } from '@/types/wallet.types';
 import { COLORS } from '@/utils/constants';
 import { formatCrypto } from '@/utils/format';
+import { KYCGateBanner } from '@/components/common/KYCGateBanner';
 
 export default function SwapScreen() {
   const [fromToken, setFromToken] = useState<TokenSymbol>('MYRC');
@@ -59,6 +60,7 @@ export default function SwapScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
+      <KYCGateBanner>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
@@ -129,6 +131,7 @@ export default function SwapScreen() {
           <Button title="Cancel" onPress={() => setShowConfirm(false)} variant="ghost" />
         </View>
       </Modal>
+      </KYCGateBanner>
     </SafeAreaView>
   );
 }

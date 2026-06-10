@@ -1,15 +1,26 @@
 import { env } from '@/config/env';
 
-type PriceListener = (prices: Record<string, number>) => void;
+export type PriceMap = Record<string, number>;
+
+export interface WsNotification {
+  type: string;
+  [key: string]: unknown;
+}
+
+type PriceListener = (prices: PriceMap) => void;
+type NotificationListener = (notification: WsNotification) => void;
 
 class WebSocketService {
   private ws: WebSocket | null = null;
-  private listeners = new Set<PriceListener>();
+  private priceListeners = new Set<PriceListener>();
+  private notificationListeners = new Set<NotificationListener>();
   private reconnectDelay = 1000;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private shouldConnect = false;
+  private token = '';
 
   connect(token: string) {
+    this.token = token;
     this.shouldConnect = true;
     this.reconnectDelay = 1000;
     this._open(token);
@@ -22,8 +33,14 @@ class WebSocketService {
 
       this.ws.onmessage = (e) => {
         try {
-          const data = JSON.parse(e.data) as Record<string, number>;
-          this.listeners.forEach((l) => l(data));
+          const data = JSON.parse(e.data);
+          // Messages with a "type" string field are transaction notifications.
+          // All other messages are price broadcasts (Record<string, number>).
+          if (data && typeof data.type === 'string') {
+            this.notificationListeners.forEach((l) => l(data as WsNotification));
+          } else {
+            this.priceListeners.forEach((l) => l(data as PriceMap));
+          }
         } catch {}
       };
 
@@ -32,7 +49,7 @@ class WebSocketService {
         if (this.shouldConnect) {
           this.reconnectTimer = setTimeout(() => {
             this.reconnectDelay = Math.min(this.reconnectDelay * 2, 30_000);
-            this._open(token);
+            this._open(this.token);
           }, this.reconnectDelay);
         }
       };
@@ -50,9 +67,21 @@ class WebSocketService {
     this.ws = null;
   }
 
+  /** Subscribe to live price broadcasts. */
+  addPriceListener(listener: PriceListener) {
+    this.priceListeners.add(listener);
+    return () => this.priceListeners.delete(listener);
+  }
+
+  /** @deprecated renamed to addPriceListener — kept for backwards compatibility */
   addListener(listener: PriceListener) {
-    this.listeners.add(listener);
-    return () => this.listeners.delete(listener);
+    return this.addPriceListener(listener);
+  }
+
+  /** Subscribe to transaction / system notifications from the server. */
+  addNotificationListener(listener: NotificationListener) {
+    this.notificationListeners.add(listener);
+    return () => this.notificationListeners.delete(listener);
   }
 }
 

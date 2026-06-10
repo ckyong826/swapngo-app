@@ -5,13 +5,13 @@ import { useAuthStore } from '@/stores/auth.store';
 import { useUIStore } from '@/stores/ui.store';
 
 export function useLogin() {
-  const setToken = useAuthStore((s) => s.setToken);
+  const setAuth = useAuthStore((s) => s.setAuth);
   const showToast = useUIStore((s) => s.showToast);
 
   return useMutation({
     mutationFn: authApi.login,
     onSuccess: async (data) => {
-      await setToken(data.access_token);
+      await setAuth(data.access_token, data.user);
       router.replace('/(tabs)');
     },
     onError: (err: { message: string }) => {
