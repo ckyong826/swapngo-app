@@ -1,3 +1,4 @@
+import { AppState } from 'react-native';
 import { env } from '@/config/env';
 
 export type PriceMap = Record<string, number>;
@@ -9,20 +10,32 @@ export interface WsNotification {
 
 type PriceListener = (prices: PriceMap) => void;
 type NotificationListener = (notification: WsNotification) => void;
+type ReconnectListener = () => void;
 
 class WebSocketService {
   private ws: WebSocket | null = null;
   private priceListeners = new Set<PriceListener>();
   private notificationListeners = new Set<NotificationListener>();
+  private reconnectListeners = new Set<ReconnectListener>();
   private reconnectDelay = 1000;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private shouldConnect = false;
+  private hasEverConnected = false;
   private token = '';
+
+  constructor() {
+    AppState.addEventListener('change', (state) => {
+      if (state === 'active' && this.shouldConnect && !this.ws) {
+        this._open(this.token);
+      }
+    });
+  }
 
   connect(token: string) {
     this.token = token;
     this.shouldConnect = true;
     this.reconnectDelay = 1000;
+    this.hasEverConnected = false;
     this._open(token);
   }
 
@@ -30,6 +43,13 @@ class WebSocketService {
     if (this.ws) return;
     try {
       this.ws = new WebSocket(`${env.WS_URL}/ws/prices?token=${token}`);
+
+      this.ws.onopen = () => {
+        if (this.hasEverConnected) {
+          this.reconnectListeners.forEach((l) => l());
+        }
+        this.hasEverConnected = true;
+      };
 
       this.ws.onmessage = (e) => {
         try {
@@ -70,7 +90,7 @@ class WebSocketService {
   /** Subscribe to live price broadcasts. */
   addPriceListener(listener: PriceListener) {
     this.priceListeners.add(listener);
-    return () => this.priceListeners.delete(listener);
+    return () => { this.priceListeners.delete(listener); };
   }
 
   /** @deprecated renamed to addPriceListener — kept for backwards compatibility */
@@ -81,7 +101,13 @@ class WebSocketService {
   /** Subscribe to transaction / system notifications from the server. */
   addNotificationListener(listener: NotificationListener) {
     this.notificationListeners.add(listener);
-    return () => this.notificationListeners.delete(listener);
+    return () => { this.notificationListeners.delete(listener); };
+  }
+
+  /** Subscribe to reconnect events (fires on every successful open after the first). */
+  addReconnectListener(listener: ReconnectListener) {
+    this.reconnectListeners.add(listener);
+    return () => { this.reconnectListeners.delete(listener); };
   }
 }
 

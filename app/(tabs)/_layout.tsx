@@ -7,6 +7,7 @@ import { useAuthStore } from '@/stores/auth.store';
 import { router } from 'expo-router';
 import { COLORS } from '@/utils/constants';
 import { useNotification } from '@/hooks/useNotification';
+import { useWsReconnectRefresh } from '@/hooks/useWsReconnectRefresh';
 
 export default function TabsLayout() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -14,6 +15,7 @@ export default function TabsLayout() {
 
   // Listen for server-pushed transaction notifications via WebSocket
   useNotification();
+  useWsReconnectRefresh();
 
   useEffect(() => {
     if (!isAuthenticated) {

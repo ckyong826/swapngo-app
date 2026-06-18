@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { Alert } from 'react-native';
+import { useQueryClient } from '@tanstack/react-query';
 import { wsService, WsNotification } from '@/services/websocket.service';
+import { useUIStore } from '@/stores/ui.store';
+import { kycKeys } from '@/hooks/useKYC';
 
 // Maps backend notification type strings to user-friendly messages.
 const MESSAGES: Record<string, (n: WsNotification) => string> = {
@@ -25,21 +27,32 @@ const MESSAGES: Record<string, (n: WsNotification) => string> = {
 export function useNotification(onNotification?: (n: WsNotification) => void) {
   const onNotificationRef = useRef(onNotification);
   onNotificationRef.current = onNotification;
+  const showToast = useUIStore((s) => s.showToast);
+  const qc = useQueryClient();
 
   useEffect(() => {
     const unsub = wsService.addNotificationListener((notification) => {
       // Call optional custom handler
       onNotificationRef.current?.(notification);
 
-      // Default: show a native Alert
       const formatter = MESSAGES[notification.type];
       const message = formatter
         ? formatter(notification)
         : `Update: ${notification.type}`;
 
-      Alert.alert('Notification', message);
+      const isFailure = notification.type.endsWith('_FAILED') || notification.type === 'KYC_REJECTED';
+      showToast(message, isFailure ? 'error' : 'success');
+
+      if (notification.type.endsWith('_COMPLETED')) {
+        qc.invalidateQueries({ queryKey: ['wallet'] });
+        qc.invalidateQueries({ queryKey: ['transaction-history'] });
+      } else if (notification.type.endsWith('_FAILED')) {
+        qc.invalidateQueries({ queryKey: ['transaction-history'] });
+      } else if (notification.type === 'KYC_APPROVED' || notification.type === 'KYC_REJECTED') {
+        qc.invalidateQueries({ queryKey: kycKeys.status });
+      }
     });
 
     return unsub;
-  }, []);
+  }, [showToast, qc]);
 }

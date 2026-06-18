@@ -1,18 +1,36 @@
 import { create } from 'zustand';
 
+type ToastItem = { message: string; type: 'success' | 'error' | 'info' };
+
 interface UIStore {
-  toast: { message: string; type: 'success' | 'error' | 'info' } | null;
+  toast: ToastItem | null;
+  queue: ToastItem[];
   showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
   hideToast: () => void;
 }
 
-export const useUIStore = create<UIStore>((set) => ({
+function showNext(set: (fn: (s: UIStore) => Partial<UIStore>) => void) {
+  set((s) => {
+    const [next, ...rest] = s.queue;
+    if (!next) return { toast: null, queue: rest };
+    setTimeout(() => showNext(set), 3000);
+    return { toast: next, queue: rest };
+  });
+}
+
+export const useUIStore = create<UIStore>((set, get) => ({
   toast: null,
+  queue: [],
 
   showToast: (message, type = 'info') => {
-    set({ toast: { message, type } });
-    setTimeout(() => set({ toast: null }), 3000);
+    const item: ToastItem = { message, type };
+    if (get().toast === null) {
+      set({ toast: item });
+      setTimeout(() => showNext(set), 3000);
+    } else {
+      set((s) => ({ queue: [...s.queue, item] }));
+    }
   },
 
-  hideToast: () => set({ toast: null }),
+  hideToast: () => showNext(set),
 }));
