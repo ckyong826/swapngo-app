@@ -14,19 +14,23 @@ export const registerSchema = z.object({
   path: ['confirmPassword'],
 });
 
-export const transferSchema = z.object({
+export const transferSchema = (balance: number = Infinity) => z.object({
   recipient: z.string().min(1, 'Recipient is required'),
   token: z.string().min(1, 'Token is required'),
-  amount: z.string().refine((v) => !isNaN(Number(v)) && Number(v) > 0, 'Enter a valid amount'),
+  amount: z.string()
+    .refine((v) => !isNaN(Number(v)) && Number(v) > 0, 'Enter a valid amount')
+    .refine((v) => Number(v) <= balance, 'Insufficient balance'),
 });
 
 export const depositSchema = z.object({
   amount_myr: z.string().refine((v) => !isNaN(Number(v)) && Number(v) >= 10, 'Minimum deposit is RM 10'),
 });
 
-export const withdrawSchema = z.object({
+export const withdrawSchema = (balance: number = Infinity) => z.object({
   destination_type: z.enum(['bank', 'sui_wallet']),
-  amount: z.string().refine((v) => !isNaN(Number(v)) && Number(v) > 0, 'Enter a valid amount'),
+  amount: z.string()
+    .refine((v) => !isNaN(Number(v)) && Number(v) > 0, 'Enter a valid amount')
+    .refine((v) => Number(v) <= balance, 'Insufficient balance'),
   token: z.string().min(1, 'Token is required'),
   bank_account: z.string().optional(),
   bank_name: z.string().optional(),
@@ -35,6 +39,6 @@ export const withdrawSchema = z.object({
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
-export type TransferFormData = z.infer<typeof transferSchema>;
+export type TransferFormData = z.infer<ReturnType<typeof transferSchema>>;
 export type DepositFormData = z.infer<typeof depositSchema>;
-export type WithdrawFormData = z.infer<typeof withdrawSchema>;
+export type WithdrawFormData = z.infer<ReturnType<typeof withdrawSchema>>;

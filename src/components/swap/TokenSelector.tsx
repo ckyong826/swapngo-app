@@ -10,17 +10,20 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, TOKENS } from '@/utils/constants';
-import { TokenSymbol } from '@/types/wallet.types';
+import { TokenBalance, TokenSymbol } from '@/types/wallet.types';
 import { TokenIcon } from '@/components/common/TokenIcon';
+import { getTokenBalance } from '@/utils/balance';
+import { formatCrypto } from '@/utils/format';
 
 interface Props {
   label: string;
   value: TokenSymbol;
   onChange: (t: TokenSymbol) => void;
   exclude?: TokenSymbol;
+  balances?: TokenBalance[];
 }
 
-export function TokenSelector({ label, value, onChange, exclude }: Props) {
+export function TokenSelector({ label, value, onChange, exclude, balances }: Props) {
   const [open, setOpen] = useState(false);
   const options = TOKENS.filter((t) => t !== exclude);
 
@@ -52,7 +55,10 @@ export function TokenSelector({ label, value, onChange, exclude }: Props) {
                 }}
               >
                 <TokenIcon token={item} size={38} />
-                <Text style={styles.optionText}>{item}</Text>
+                <View style={styles.optionInfo}>
+                  <Text style={styles.optionText}>{item}</Text>
+                  <Text style={styles.optionBalance}>{formatCrypto(getTokenBalance(balances, item), item)}</Text>
+                </View>
                 {item === value && (
                   <Ionicons name="checkmark-circle" size={20} color={COLORS.purple} />
                 )}
@@ -102,5 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   optionActive: { backgroundColor: COLORS.purpleDim },
-  optionText: { flex: 1, fontSize: 15, fontWeight: '600', color: COLORS.black },
+  optionInfo: { flex: 1 },
+  optionText: { fontSize: 15, fontWeight: '600', color: COLORS.black },
+  optionBalance: { fontSize: 12, color: COLORS.gray, marginTop: 2 },
 });

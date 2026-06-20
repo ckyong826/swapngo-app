@@ -17,18 +17,22 @@ import { ConfirmSheet } from '@/components/send/ConfirmSheet';
 import { Button } from '@/components/common/Button';
 import { transferSchema, TransferFormData } from '@/utils/validation';
 import { useInitiateTransfer } from '@/hooks/useTransfer';
+import { useWallet } from '@/hooks/useWallet';
 import { TokenSymbol } from '@/types/wallet.types';
 import { COLORS } from '@/utils/constants';
 import { KYCGateBanner } from '@/components/common/KYCGateBanner';
+import { getTokenBalance } from '@/utils/balance';
 
 export default function SendScreen() {
   const [selectedToken, setSelectedToken] = useState<TokenSymbol>('MYRC');
   const [showConfirm, setShowConfirm] = useState(false);
   const { mutate: initiate, isPending } = useInitiateTransfer();
   const { recipient: scannedRecipient } = useLocalSearchParams<{ recipient?: string }>();
+  const { data: wallet } = useWallet();
+  const balance = getTokenBalance(wallet?.balances, selectedToken);
 
   const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm<TransferFormData>({
-    resolver: zodResolver(transferSchema),
+    resolver: zodResolver(transferSchema(balance)),
     defaultValues: { token: 'MYRC', recipient: '', amount: '' },
   });
 
@@ -90,6 +94,7 @@ export default function SendScreen() {
                       setSelectedToken(t);
                     }}
                     amountError={errors.amount?.message}
+                    balances={wallet?.balances}
                   />
                 )}
               />

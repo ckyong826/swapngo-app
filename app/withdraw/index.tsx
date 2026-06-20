@@ -16,11 +16,14 @@ import { Input } from '@/components/common/Input';
 import { Button } from '@/components/common/Button';
 import { withdrawSchema, WithdrawFormData } from '@/utils/validation';
 import { useInitiateWithdraw } from '@/hooks/useWithdraw';
+import { useWallet } from '@/hooks/useWallet';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, TOKENS } from '@/utils/constants';
 import { TokenSymbol } from '@/types/wallet.types';
 import { TokenIcon } from '@/components/common/TokenIcon';
 import { KYCGateBanner } from '@/components/common/KYCGateBanner';
+import { getTokenBalance } from '@/utils/balance';
+import { formatCrypto } from '@/utils/format';
 
 type DestType = 'bank' | 'sui_wallet';
 
@@ -28,9 +31,11 @@ export default function WithdrawScreen() {
   const [destType, setDestType] = useState<DestType>('bank');
   const [selectedToken, setSelectedToken] = useState<TokenSymbol>('MYRC');
   const { mutate: initiate, isPending } = useInitiateWithdraw();
+  const { data: wallet } = useWallet();
+  const balance = getTokenBalance(wallet?.balances, selectedToken);
 
-  const { control, handleSubmit, formState: { errors } } = useForm<WithdrawFormData>({
-    resolver: zodResolver(withdrawSchema),
+  const { control, handleSubmit, setValue, formState: { errors } } = useForm<WithdrawFormData>({
+    resolver: zodResolver(withdrawSchema(balance)),
     defaultValues: { destination_type: 'bank', token: 'MYRC', amount: '' },
   });
 
@@ -149,14 +154,28 @@ export default function WithdrawScreen() {
                         style={[styles.tokenChip, active && styles.tokenChipActive]}
                       >
                         <TokenIcon token={t} size={22} />
-                        <Text style={[styles.tokenText, active && styles.tokenTextActive]}>
-                          {t}
-                        </Text>
+                        <View>
+                          <Text style={[styles.tokenText, active && styles.tokenTextActive]}>
+                            {t}
+                          </Text>
+                          <Text style={styles.tokenBalance}>
+                            {formatCrypto(getTokenBalance(wallet?.balances, t), t)}
+                          </Text>
+                        </View>
                       </TouchableOpacity>
                     );
                   })}
                 </View>
               </ScrollView>
+            </View>
+
+            <View style={styles.availableRow}>
+              <Text style={styles.availableText}>
+                Available: {formatCrypto(balance, selectedToken)}
+              </Text>
+              <TouchableOpacity onPress={() => setValue('amount', String(balance), { shouldValidate: true })}>
+                <Text style={styles.maxText}>MAX</Text>
+              </TouchableOpacity>
             </View>
 
             <Controller
@@ -248,5 +267,9 @@ const styles = StyleSheet.create({
   tokenChipActive: { backgroundColor: COLORS.purpleDim, borderColor: COLORS.purple },
   tokenText: { fontSize: 13, fontWeight: '600', color: COLORS.gray },
   tokenTextActive: { color: COLORS.purple },
+  tokenBalance: { fontSize: 10, color: COLORS.gray, marginTop: 1 },
   symbolLabel: { fontSize: 14, fontWeight: '700', color: COLORS.gray },
+  availableRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  availableText: { fontSize: 12, color: COLORS.gray },
+  maxText: { fontSize: 12, fontWeight: '700', color: COLORS.purple },
 });

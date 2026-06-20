@@ -16,7 +16,8 @@
       "Bash(adb pull *)",
       "Bash(MSYS_NO_PATHCONV=1 adb shell screencap -p /sdcard/screen1.png)",
       "Bash(MSYS_NO_PATHCONV=1 adb pull /sdcard/screen1.png /tmp/screen1.png)",
-      "Bash(ipconfig)"
+      "Bash(ipconfig)",
+      "Bash(echo \"EXIT:$?\")"
     ]
   }
 }

@@ -6,6 +6,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TokenSelector } from '@/components/swap/TokenSelector';
@@ -16,9 +17,11 @@ import { Input } from '@/components/common/Input';
 import { Modal } from '@/components/common/Modal';
 import { useInitiateSwap } from '@/hooks/useSwap';
 import { usePriceSocket } from '@/hooks/usePriceSocket';
+import { useWallet } from '@/hooks/useWallet';
 import { TokenSymbol } from '@/types/wallet.types';
 import { COLORS } from '@/utils/constants';
 import { formatCrypto } from '@/utils/format';
+import { getTokenBalance } from '@/utils/balance';
 import { KYCGateBanner } from '@/components/common/KYCGateBanner';
 
 export default function SwapScreen() {
@@ -30,6 +33,8 @@ export default function SwapScreen() {
 
   const { mutate: initiate, isPending } = useInitiateSwap();
   const { prices } = usePriceSocket();
+  const { data: wallet } = useWallet();
+  const fromBalance = getTokenBalance(wallet?.balances, fromToken);
 
   const flip = () => {
     setFromToken(toToken);
@@ -41,6 +46,10 @@ export default function SwapScreen() {
     const n = Number(amount);
     if (!amount || isNaN(n) || n <= 0) {
       setAmountError('Enter a valid amount');
+      return false;
+    }
+    if (n > fromBalance) {
+      setAmountError('Insufficient balance');
       return false;
     }
     setAmountError('');
@@ -75,7 +84,17 @@ export default function SwapScreen() {
               value={fromToken}
               onChange={setFromToken}
               exclude={toToken}
+              balances={wallet?.balances}
             />
+
+            <View style={styles.availableRow}>
+              <Text style={styles.availableText}>
+                Available: {formatCrypto(fromBalance, fromToken)}
+              </Text>
+              <TouchableOpacity onPress={() => setAmount(String(fromBalance))}>
+                <Text style={styles.maxText}>MAX</Text>
+              </TouchableOpacity>
+            </View>
 
             <View style={styles.inputRow}>
               <Input
@@ -95,6 +114,7 @@ export default function SwapScreen() {
               value={toToken}
               onChange={setToToken}
               exclude={fromToken}
+              balances={wallet?.balances}
             />
 
             <RateDisplay
@@ -155,6 +175,9 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   inputRow: {},
+  availableRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  availableText: { fontSize: 12, color: COLORS.gray },
+  maxText: { fontSize: 12, fontWeight: '700', color: COLORS.purple },
   confirmContent: { gap: 14 },
   confirmRow: {
     flexDirection: 'row',
