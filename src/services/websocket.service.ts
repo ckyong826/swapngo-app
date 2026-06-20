@@ -5,7 +5,8 @@ export type PriceMap = Record<string, number>;
 
 export interface WsNotification {
   type: string;
-  [key: string]: unknown;
+  data: Record<string, unknown>;
+  timestamp: number;
 }
 
 type PriceListener = (prices: PriceMap) => void;
@@ -53,13 +54,14 @@ class WebSocketService {
 
       this.ws.onmessage = (e) => {
         try {
-          const data = JSON.parse(e.data);
-          // Messages with a "type" string field are transaction notifications.
-          // All other messages are price broadcasts (Record<string, number>).
-          if (data && typeof data.type === 'string') {
-            this.notificationListeners.forEach((l) => l(data as WsNotification));
+          const msg = JSON.parse(e.data);
+          // Every message is enveloped as { type, data, timestamp }.
+          // PRICE_UPDATE carries the price map in `data`; everything else is a notification.
+          if (!msg || typeof msg.type !== 'string') return;
+          if (msg.type === 'PRICE_UPDATE') {
+            this.priceListeners.forEach((l) => l(msg.data as PriceMap));
           } else {
-            this.priceListeners.forEach((l) => l(data as PriceMap));
+            this.notificationListeners.forEach((l) => l(msg as WsNotification));
           }
         } catch {}
       };

@@ -15,12 +15,12 @@ export function useWallet() {
   const walletWithPrices: WalletInfo | undefined = query.data
     ? {
         ...query.data,
-        balances: query.data.balances.map((b) => ({
+        balances: (query.data.balances ?? []).map((b) => ({
           ...b,
-          value_myr: (prices[b.token] ?? 0) * b.amount,
+          value_myr: (prices[b.token] ?? 1) * b.amount,
         })),
-        total_value_myr: query.data.balances.reduce(
-          (sum, b) => sum + (prices[b.token] ?? 0) * b.amount,
+        total_value_myr: (query.data.balances ?? []).reduce(
+          (sum, b) => sum + (prices[b.token] ?? 1) * b.amount,
           0
         ),
       }

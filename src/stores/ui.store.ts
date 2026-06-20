@@ -24,7 +24,13 @@ export const useUIStore = create<UIStore>((set, get) => ({
 
   showToast: (message, type = 'info') => {
     const item: ToastItem = { message, type };
-    if (get().toast === null) {
+    const { toast, queue } = get();
+    const isDuplicate =
+      (toast !== null && toast.message === message && toast.type === type) ||
+      queue.some((q) => q.message === message && q.type === type);
+    if (isDuplicate) return;
+
+    if (toast === null) {
       set({ toast: item });
       setTimeout(() => showNext(set), 3000);
     } else {

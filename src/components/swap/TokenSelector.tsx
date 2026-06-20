@@ -6,8 +6,8 @@ import {
   StyleSheet,
   Modal,
   FlatList,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, TOKENS } from '@/utils/constants';
 import { TokenSymbol } from '@/types/wallet.types';
@@ -37,11 +37,12 @@ export function TokenSelector({ label, value, onChange, exclude }: Props) {
 
       <Modal visible={open} animationType="slide" transparent onRequestClose={() => setOpen(false)}>
         <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={() => setOpen(false)} />
-        <SafeAreaView style={styles.sheet}>
+        <SafeAreaView style={styles.sheet} edges={['bottom']}>
           <Text style={styles.sheetTitle}>Select Token</Text>
           <FlatList
             data={options}
             keyExtractor={(t) => t}
+            contentContainerStyle={styles.listContent}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={[styles.option, item === value && styles.optionActive]}
@@ -91,6 +92,7 @@ const styles = StyleSheet.create({
     maxHeight: '60%',
   },
   sheetTitle: { fontSize: 18, fontWeight: '700', color: COLORS.black, marginBottom: 16 },
+  listContent: { paddingBottom: 12 },
   option: {
     flexDirection: 'row',
     alignItems: 'center',

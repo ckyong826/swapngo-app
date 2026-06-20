@@ -6,16 +6,16 @@ import { kycKeys } from '@/hooks/useKYC';
 
 // Maps backend notification type strings to user-friendly messages.
 const MESSAGES: Record<string, (n: WsNotification) => string> = {
-  SWAP_COMPLETED: (n) => `Swap completed! You received ${n.actual_amount ?? ''} ${n.to_token ?? ''}.`,
+  SWAP_COMPLETED: (n) => `Swap completed! You received ${n.data.to_amount ?? ''} ${n.data.to_token ?? ''}.`,
   SWAP_FAILED: () => 'Swap failed. Please try again.',
-  DEPOSIT_COMPLETED: (n) => `Deposit of ${n.amount ?? ''} MYRC confirmed.`,
+  DEPOSIT_SUCCESS: (n) => `Deposit of ${n.data.amount ?? ''} MYRC confirmed.`,
   DEPOSIT_FAILED: () => 'Deposit failed. Please contact support.',
-  WITHDRAW_COMPLETED: (n) => `Withdrawal of ${n.amount ?? ''} MYR processed.`,
+  WITHDRAW_SUCCESS: (n) => `Withdrawal of ${n.data.amount ?? ''} MYR processed.`,
   WITHDRAW_FAILED: () => 'Withdrawal failed. Please contact support.',
-  TRANSFER_COMPLETED: (n) => `Transfer of ${n.amount ?? ''} MYRC sent successfully.`,
+  TRANSFER_SUCCESS: (n) => `Transfer of ${n.data.amount ?? ''} MYRC sent successfully.`,
   TRANSFER_FAILED: () => 'Transfer failed. Please try again.',
   KYC_APPROVED: () => 'Your KYC has been approved! Full features are now unlocked.',
-  KYC_REJECTED: (n) => `Your KYC was rejected. Reason: ${n.remarks ?? 'No reason provided.'}`,
+  KYC_REJECTED: (n) => `Your KYC was rejected. Reason: ${n.data.remarks ?? 'No reason provided.'}`,
 };
 
 /**
@@ -36,14 +36,12 @@ export function useNotification(onNotification?: (n: WsNotification) => void) {
       onNotificationRef.current?.(notification);
 
       const formatter = MESSAGES[notification.type];
-      const message = formatter
-        ? formatter(notification)
-        : `Update: ${notification.type}`;
+      if (formatter) {
+        const isFailure = notification.type.endsWith('_FAILED') || notification.type === 'KYC_REJECTED';
+        showToast(formatter(notification), isFailure ? 'error' : 'success');
+      }
 
-      const isFailure = notification.type.endsWith('_FAILED') || notification.type === 'KYC_REJECTED';
-      showToast(message, isFailure ? 'error' : 'success');
-
-      if (notification.type.endsWith('_COMPLETED')) {
+      if (notification.type.endsWith('_COMPLETED') || notification.type.endsWith('_SUCCESS')) {
         qc.invalidateQueries({ queryKey: ['wallet'] });
         qc.invalidateQueries({ queryKey: ['transaction-history'] });
       } else if (notification.type.endsWith('_FAILED')) {
