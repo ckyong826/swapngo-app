@@ -5,6 +5,7 @@ export interface SwapInitiateRequest {
   from_token: TokenSymbol;
   to_token: TokenSymbol;
   amount: number;
+  pin: string;
 }
 
 export interface SwapRecord {

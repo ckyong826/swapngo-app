@@ -16,6 +16,7 @@ import { Input } from '@/components/common/Input';
 import { Button } from '@/components/common/Button';
 import { withdrawSchema, WithdrawFormData } from '@/utils/validation';
 import { useInitiateWithdraw } from '@/hooks/useWithdraw';
+import { usePinStore } from '@/stores/pin.store';
 import { useWallet } from '@/hooks/useWallet';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, TOKENS } from '@/utils/constants';
@@ -31,6 +32,7 @@ export default function WithdrawScreen() {
   const [destType, setDestType] = useState<DestType>('bank');
   const [selectedToken, setSelectedToken] = useState<TokenSymbol>('MYRC');
   const { mutate: initiate, isPending } = useInitiateWithdraw();
+  const requestPin = usePinStore((s) => s.requestPin);
   const { data: wallet } = useWallet();
   const balance = getTokenBalance(wallet?.balances, selectedToken);
 
@@ -39,7 +41,10 @@ export default function WithdrawScreen() {
     defaultValues: { destination_type: 'bank', token: 'MYRC', amount: '' },
   });
 
-  const onSubmit = (data: WithdrawFormData) => {
+  const onSubmit = async (data: WithdrawFormData) => {
+    const pin = await requestPin();
+    if (!pin) return;
+
     const destination_details: Record<string, string> =
       destType === 'bank'
         ? { bank_account: data.bank_account ?? '', bank_name: data.bank_name ?? '' }
@@ -50,6 +55,7 @@ export default function WithdrawScreen() {
       destination_details,
       token: selectedToken,
       amount: Number(data.amount),
+      pin,
     });
   };
 

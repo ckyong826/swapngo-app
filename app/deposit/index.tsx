@@ -17,17 +17,21 @@ import { Button } from '@/components/common/Button';
 import { TokenIcon } from '@/components/common/TokenIcon';
 import { depositSchema, DepositFormData } from '@/utils/validation';
 import { useInitiateDeposit } from '@/hooks/useDeposit';
+import { usePinStore } from '@/stores/pin.store';
 import { COLORS } from '@/utils/constants';
 
 export default function DepositScreen() {
   const { mutate: initiate, isPending } = useInitiateDeposit();
+  const requestPin = usePinStore((s) => s.requestPin);
 
   const { control, handleSubmit, setValue, formState: { errors } } = useForm<DepositFormData>({
     resolver: zodResolver(depositSchema),
   });
 
-  const onSubmit = ({ amount_myr }: DepositFormData) => {
-    initiate({ amount_myr: Number(amount_myr) });
+  const onSubmit = async ({ amount_myr }: DepositFormData) => {
+    const pin = await requestPin();
+    if (!pin) return;
+    initiate({ amount_myr: Number(amount_myr), pin });
   };
 
   const presets = [50, 100, 200, 500];

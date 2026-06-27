@@ -13,6 +13,7 @@ export interface TransferInitiateRequest {
   recipient: string;
   token: string;
   amount: number;
+  pin: string;
 }
 
 export interface TransferRecord {
@@ -29,6 +30,7 @@ export interface TransferRecord {
 
 export interface DepositInitiateRequest {
   amount_myr: number;
+  pin: string;
 }
 
 export interface DepositRecord {
@@ -47,6 +49,7 @@ export interface WithdrawInitiateRequest {
   destination_details: Record<string, string>;
   token: string;
   amount: number;
+  pin: string;
 }
 
 export interface WithdrawRecord {

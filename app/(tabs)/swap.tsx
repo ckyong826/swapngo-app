@@ -16,6 +16,7 @@ import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
 import { Modal } from '@/components/common/Modal';
 import { useInitiateSwap } from '@/hooks/useSwap';
+import { usePinStore } from '@/stores/pin.store';
 import { usePriceSocket } from '@/hooks/usePriceSocket';
 import { useWallet } from '@/hooks/useWallet';
 import { TokenSymbol } from '@/types/wallet.types';
@@ -32,6 +33,7 @@ export default function SwapScreen() {
   const [amountError, setAmountError] = useState('');
 
   const { mutate: initiate, isPending } = useInitiateSwap();
+  const requestPin = usePinStore((s) => s.requestPin);
   const { prices } = usePriceSocket();
   const { data: wallet } = useWallet();
   const fromBalance = getTokenBalance(wallet?.balances, fromToken);
@@ -56,9 +58,11 @@ export default function SwapScreen() {
     return true;
   };
 
-  const onConfirm = () => {
-    initiate({ from_token: fromToken, to_token: toToken, amount: Number(amount) });
+  const onConfirm = async () => {
     setShowConfirm(false);
+    const pin = await requestPin();
+    if (!pin) return;
+    initiate({ from_token: fromToken, to_token: toToken, amount: Number(amount), pin });
   };
 
   const fromPrice = prices[fromToken] ?? 0;

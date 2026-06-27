@@ -17,6 +17,7 @@ import { ConfirmSheet } from '@/components/send/ConfirmSheet';
 import { Button } from '@/components/common/Button';
 import { transferSchema, TransferFormData } from '@/utils/validation';
 import { useInitiateTransfer } from '@/hooks/useTransfer';
+import { usePinStore } from '@/stores/pin.store';
 import { useWallet } from '@/hooks/useWallet';
 import { TokenSymbol } from '@/types/wallet.types';
 import { COLORS } from '@/utils/constants';
@@ -27,6 +28,7 @@ export default function SendScreen() {
   const [selectedToken, setSelectedToken] = useState<TokenSymbol>('MYRC');
   const [showConfirm, setShowConfirm] = useState(false);
   const { mutate: initiate, isPending } = useInitiateTransfer();
+  const requestPin = usePinStore((s) => s.requestPin);
   const { recipient: scannedRecipient } = useLocalSearchParams<{ recipient?: string }>();
   const { data: wallet } = useWallet();
   const balance = getTokenBalance(wallet?.balances, selectedToken);
@@ -47,13 +49,16 @@ export default function SendScreen() {
 
   const onReview = handleSubmit(() => setShowConfirm(true));
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
+    setShowConfirm(false);
+    const pin = await requestPin();
+    if (!pin) return;
     initiate({
       recipient: recipientVal,
       token: selectedToken,
       amount: Number(amountVal),
+      pin,
     });
-    setShowConfirm(false);
   };
 
   return (

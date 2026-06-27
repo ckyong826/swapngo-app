@@ -6,6 +6,7 @@ export interface LoginRequest {
 export interface RegisterRequest {
   email: string;
   password: string;
+  pin: string;
 }
 
 export interface UserInfo {

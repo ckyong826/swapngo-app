@@ -26,7 +26,7 @@ export default function RegisterScreen() {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = ({ email, password }: RegisterFormData) => register({ email, password });
+  const onSubmit = ({ email, password, pin }: RegisterFormData) => register({ email, password, pin });
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -90,6 +90,21 @@ export default function RegisterScreen() {
                     value={field.value}
                     onChangeText={field.onChange}
                     error={errors.confirmPassword?.message}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="pin"
+                render={({ field }) => (
+                  <Input
+                    label="Transaction PIN"
+                    placeholder="4-digit PIN"
+                    keyboardType="number-pad"
+                    isPassword
+                    value={field.value}
+                    onChangeText={(t) => field.onChange(t.replace(/[^0-9]/g, '').slice(0, 4))}
+                    error={errors.pin?.message}
                   />
                 )}
               />

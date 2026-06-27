@@ -8,8 +8,11 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { useUIStore } from '@/stores/ui.store';
+import { usePinStore } from '@/stores/pin.store';
 import { COLORS } from '@/utils/constants';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { PinModalHost } from '@/components/common/PinModalHost';
+import { UnlockOverlay } from '@/components/common/UnlockOverlay';
 
 function Toast() {
   const toast = useUIStore((s) => s.toast);
@@ -40,7 +43,8 @@ function Toast() {
 }
 
 function RootLayoutNav() {
-  const { loadToken, isLoading } = useAuthStore();
+  const { loadToken, isLoading, isAuthenticated } = useAuthStore();
+  const unlocked = usePinStore((s) => s.unlocked);
 
   useEffect(() => {
     loadToken();
@@ -58,6 +62,8 @@ function RootLayoutNav() {
         <Stack.Screen name="scan" />
         <Stack.Screen name="transaction" />
       </Stack>
+      {isAuthenticated && !unlocked && <UnlockOverlay />}
+      <PinModalHost />
       <Toast />
     </>
   );

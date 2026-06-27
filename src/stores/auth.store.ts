@@ -3,6 +3,7 @@ import { storageService } from '@/services/storage.service';
 import { wsService } from '@/services/websocket.service';
 import { UserInfo } from '@/types/auth.types';
 import { router } from 'expo-router';
+import { usePinStore } from '@/stores/pin.store';
 
 interface AuthStore {
   accessToken: string | null;
@@ -56,6 +57,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     await storageService.deleteToken();
     await storageService.deleteRole();
     await storageService.deleteUser();
+    usePinStore.getState().setUnlocked(false); // re-lock so next login re-prompts for PIN
     set({ accessToken: null, role: 'USER', userInfo: null, isAuthenticated: false });
     router.replace('/(auth)/login');
   },

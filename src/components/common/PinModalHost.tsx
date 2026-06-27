@@ -1,0 +1,55 @@
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { Modal } from '@/components/common/Modal';
+import { Button } from '@/components/common/Button';
+import { usePinStore } from '@/stores/pin.store';
+import { COLORS } from '@/utils/constants';
+
+// Global PIN prompt shown before every transaction. Collects 4 digits and hands
+// them back to the awaiting caller via the pin store; the backend does the
+// actual check (a wrong PIN comes back as a 401 toast).
+export function PinModalHost() {
+  const visible = usePinStore((s) => s.visible);
+  const submitPin = usePinStore((s) => s.submitPin);
+  const cancelPin = usePinStore((s) => s.cancelPin);
+  const [pin, setPin] = useState('');
+
+  useEffect(() => {
+    if (visible) setPin('');
+  }, [visible]);
+
+  return (
+    <Modal visible={visible} onClose={cancelPin} title="Enter PIN">
+      <View style={styles.body}>
+        <Text style={styles.hint}>Enter your 4-digit PIN to authorise this transaction.</Text>
+        <TextInput
+          style={styles.input}
+          value={pin}
+          onChangeText={(t) => setPin(t.replace(/[^0-9]/g, '').slice(0, 4))}
+          keyboardType="number-pad"
+          secureTextEntry
+          maxLength={4}
+          autoFocus
+          placeholder="••••"
+          placeholderTextColor={COLORS.gray}
+        />
+        <Button title="Confirm" onPress={() => submitPin(pin)} disabled={pin.length !== 4} />
+      </View>
+    </Modal>
+  );
+}
+
+const styles = StyleSheet.create({
+  body: { gap: 16 },
+  hint: { fontSize: 14, color: COLORS.gray, textAlign: 'center' },
+  input: {
+    borderWidth: 1.5,
+    borderColor: COLORS.grayBorder,
+    borderRadius: 14,
+    paddingVertical: 14,
+    fontSize: 28,
+    letterSpacing: 12,
+    textAlign: 'center',
+    color: COLORS.black,
+  },
+});
