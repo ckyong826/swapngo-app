@@ -23,7 +23,11 @@
         "backgroundColor": "#f2fed0"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.swapngo.app"
+      "package": "com.swapngo.app",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -38,6 +42,13 @@
           "cameraPermission": "Allow Swap N Go to access your camera to scan QR codes."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "34ab99b7-7b7e-4399-a42b-c82d9f1da816"
+      }
+    },
+    "owner": "ckyongiskings-team"
   }
 }
