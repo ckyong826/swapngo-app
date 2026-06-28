@@ -1,5 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { router } from 'expo-router';
+import * as WebBrowser from 'expo-web-browser';
+import * as Linking from 'expo-linking';
 import { depositApi, depositKeys } from '@/api/deposit.api';
 import { useUIStore } from '@/stores/ui.store';
 import { FsmStatus } from '@/types/fsm.types';
@@ -12,7 +14,10 @@ export function useInitiateDeposit() {
   return useMutation({
     mutationFn: async (data: Parameters<typeof depositApi.initiate>[0]) => {
       const initiated = await depositApi.initiate(data);
-      await depositApi.simulatePaid(initiated.id);
+      // Open Billplz sandbox page; browser auto-closes on redirect back to swapngo://.
+      // Billplz fires the webhook (callback_url) server-side to credit MYRC.
+      const returnUrl = Linking.createURL('deposit/status', { queryParams: { id: initiated.id } });
+      await WebBrowser.openAuthSessionAsync(initiated.billplz_payment_url, returnUrl);
       return initiated;
     },
     onSuccess: (data) => {
