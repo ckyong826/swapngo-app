@@ -113,6 +113,21 @@ function KYCCard({ item, onApprove, onReject, disabled }: KYCCardProps) {
               <Text style={styles.noPhotoText}>No photo available</Text>
             </View>
           )}
+
+          {/* Live Selfie */}
+          <Text style={styles.photoLabel}>Live Selfie</Text>
+          {item.selfie_photo ? (
+            <Image
+              source={{ uri: `data:image/jpeg;base64,${item.selfie_photo}` }}
+              style={styles.icPhoto}
+              resizeMode="contain"
+            />
+          ) : (
+            <View style={styles.noPhoto}>
+              <Ionicons name="image-outline" size={28} color={COLORS.gray} />
+              <Text style={styles.noPhotoText}>No photo available</Text>
+            </View>
+          )}
         </View>
       )}
 

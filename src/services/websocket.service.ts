@@ -42,10 +42,12 @@ class WebSocketService {
 
   private _open(token: string) {
     if (this.ws) return;
+    console.log('[ws] connecting', `${env.WS_URL}/ws/prices`);
     try {
       this.ws = new WebSocket(`${env.WS_URL}/ws/prices?token=${token}`);
 
       this.ws.onopen = () => {
+        console.log('[ws] open');
         if (this.hasEverConnected) {
           this.reconnectListeners.forEach((l) => l());
         }
@@ -53,12 +55,14 @@ class WebSocketService {
       };
 
       this.ws.onmessage = (e) => {
+        console.log('[ws] msg', typeof e.data === 'string' ? e.data.slice(0, 200) : e.data);
         try {
           const msg = JSON.parse(e.data);
           // Every message is enveloped as { type, data, timestamp }.
           // PRICE_UPDATE carries the price map in `data`; everything else is a notification.
           if (!msg || typeof msg.type !== 'string') return;
           if (msg.type === 'PRICE_UPDATE') {
+            console.log('[ws] PRICE_UPDATE', msg.data);
             this.priceListeners.forEach((l) => l(msg.data as PriceMap));
           } else {
             this.notificationListeners.forEach((l) => l(msg as WsNotification));
@@ -66,7 +70,8 @@ class WebSocketService {
         } catch {}
       };
 
-      this.ws.onclose = () => {
+      this.ws.onclose = (e) => {
+        console.log('[ws] close', (e as any)?.code, (e as any)?.reason);
         this.ws = null;
         if (this.shouldConnect) {
           this.reconnectTimer = setTimeout(() => {
@@ -76,10 +81,13 @@ class WebSocketService {
         }
       };
 
-      this.ws.onerror = () => {
+      this.ws.onerror = (e) => {
+        console.log('[ws] error', (e as any)?.message ?? e);
         this.ws?.close();
       };
-    } catch {}
+    } catch (err) {
+      console.log('[ws] connect threw', err);
+    }
   }
 
   disconnect() {

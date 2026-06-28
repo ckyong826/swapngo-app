@@ -9,6 +9,11 @@ export interface PaginatedResponse<T> {
   page: number;
 }
 
+export interface ResolvedRecipient {
+  username: string;
+  sui_address: string;
+}
+
 export interface TransferInitiateRequest {
   recipient: string;
   token: string;

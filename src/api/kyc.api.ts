@@ -16,6 +16,7 @@ export interface SubmitKYCPayload {
   ic_number: string;
   ic_front_photo: string; // base64-encoded image
   ic_back_photo: string;  // base64-encoded image
+  selfie_photo: string;   // base64-encoded live selfie
 }
 
 // ── Admin types ───────────────────────────────────────────────────────────────
@@ -27,6 +28,7 @@ export interface PendingKYCItem {
   ic_number: string;
   ic_front_photo: string; // decrypted base64
   ic_back_photo: string;  // decrypted base64
+  selfie_photo: string;   // decrypted base64 live selfie
   status: string;
   created_at: string;
 }

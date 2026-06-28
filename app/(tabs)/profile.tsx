@@ -40,13 +40,19 @@ const KYC_CONFIG: Record<
 
 // ── Camera Capture ────────────────────────────────────────────────────────────
 
+// Min JPEG size (bytes) below which a capture is treated as blurry/unreadable.
+// Tune against real device captures; raise to be stricter, lower if clear photos get rejected.
+const MIN_SHARP_BYTES = 150_000;
+
 interface CameraCaptureProps {
   onCapture: (base64: string) => void;
   onClose: () => void;
   title: string;
+  facing?: 'front' | 'back';
+  guide?: string;
 }
 
-function CameraCapture({ onCapture, onClose, title }: CameraCaptureProps) {
+function CameraCapture({ onCapture, onClose, title, facing = 'back', guide = 'Position your IC within the frame' }: CameraCaptureProps) {
   const cameraRef = useRef<CameraView>(null);
   const [permission, requestPermission] = useCameraPermissions();
   const [capturing, setCapturing] = useState(false);
@@ -70,6 +76,15 @@ function CameraCapture({ onCapture, onClose, title }: CameraCaptureProps) {
     try {
       const photo = await cameraRef.current.takePictureAsync({ base64: true, quality: 0.5 });
       if (photo?.base64) {
+        // ponytail: JPEG byte size as blur proxy — camera & quality are fixed, so a
+        // sharp, detailed IC photo compresses larger than a blurry/low-detail one.
+        // MIN_SHARP_BYTES is a calibration knob; swap for a native Laplacian-variance
+        // check if false rejects show up in testing.
+        const bytes = (photo.base64.length * 3) / 4;
+        if (bytes < MIN_SHARP_BYTES) {
+          Alert.alert('Unreadable photo', 'Image is unreadable. Please upload a clear photo.');
+          return; // keep camera open so the user can retry without leaving the screen
+        }
         onCapture(photo.base64);
       }
     } catch {
@@ -81,7 +96,7 @@ function CameraCapture({ onCapture, onClose, title }: CameraCaptureProps) {
 
   return (
     <View style={camStyles.container}>
-      <CameraView ref={cameraRef} style={camStyles.camera} facing="back" />
+      <CameraView ref={cameraRef} style={camStyles.camera} facing={facing} />
       <View style={camStyles.overlay}>
         <View style={camStyles.topBar}>
           <TouchableOpacity onPress={onClose} style={camStyles.closeBtn}>
@@ -91,7 +106,7 @@ function CameraCapture({ onCapture, onClose, title }: CameraCaptureProps) {
           <View style={{ width: 44 }} />
         </View>
         <View style={camStyles.guide}>
-          <Text style={camStyles.guideText}>Position your IC within the frame</Text>
+          <Text style={camStyles.guideText}>{guide}</Text>
         </View>
         <View style={camStyles.bottomBar}>
           <TouchableOpacity style={camStyles.captureBtn} onPress={capture} disabled={capturing}>
@@ -113,11 +128,12 @@ interface KYCSheetProps {
 }
 
 function KYCSubmissionSheet({ visible, onClose }: KYCSheetProps) {
-  const [cameraFor, setCameraFor] = useState<'front' | 'back' | null>(null);
+  const [cameraFor, setCameraFor] = useState<'front' | 'back' | 'selfie' | null>(null);
   const [fullName, setFullName] = useState('');
   const [icNumber, setIcNumber] = useState('');
   const [frontBase64, setFrontBase64] = useState('');
   const [backBase64, setBackBase64] = useState('');
+  const [selfieBase64, setSelfieBase64] = useState('');
 
   const { mutate: submitKYC, isPending } = useSubmitKYC(() => {
     resetForm();
@@ -130,6 +146,7 @@ function KYCSubmissionSheet({ visible, onClose }: KYCSheetProps) {
     setIcNumber('');
     setFrontBase64('');
     setBackBase64('');
+    setSelfieBase64('');
   };
 
   const handleClose = () => { resetForm(); onClose(); };
@@ -139,18 +156,23 @@ function KYCSubmissionSheet({ visible, onClose }: KYCSheetProps) {
     if (!icNumber.trim())  return Alert.alert('Required', 'Please enter your IC number.');
     if (!frontBase64)      return Alert.alert('Required', 'Please capture the front of your IC.');
     if (!backBase64)       return Alert.alert('Required', 'Please capture the back of your IC.');
-    submitKYC({ full_name: fullName.trim(), ic_number: icNumber.trim(), ic_front_photo: frontBase64, ic_back_photo: backBase64 });
+    if (!selfieBase64)     return Alert.alert('Required', 'Please take a live selfie.');
+    submitKYC({ full_name: fullName.trim(), ic_number: icNumber.trim(), ic_front_photo: frontBase64, ic_back_photo: backBase64, selfie_photo: selfieBase64 });
   };
 
   // Camera overlay — fullscreen
   if (cameraFor) {
+    const camTitle = cameraFor === 'front' ? 'Front of IC' : cameraFor === 'back' ? 'Back of IC' : 'Live Selfie';
     return (
       <Modal visible animationType="slide">
         <CameraCapture
-          title={cameraFor === 'front' ? 'Front of IC' : 'Back of IC'}
+          title={camTitle}
+          facing={cameraFor === 'selfie' ? 'front' : 'back'}
+          guide={cameraFor === 'selfie' ? 'Center your face within the frame' : 'Position your IC within the frame'}
           onCapture={(b64) => {
             if (cameraFor === 'front') setFrontBase64(b64);
-            else setBackBase64(b64);
+            else if (cameraFor === 'back') setBackBase64(b64);
+            else setSelfieBase64(b64);
             setCameraFor(null);
           }}
           onClose={() => setCameraFor(null)}
@@ -240,6 +262,31 @@ function KYCSubmissionSheet({ visible, onClose }: KYCSheetProps) {
                     <Ionicons name="card-outline" size={28} color={COLORS.purple} />
                     <Text style={kycStyles.photoBtnText}>Take Back IC Photo</Text>
                     <Text style={kycStyles.photoHint}>Back side with barcode &amp; address</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+
+              <Text style={kycStyles.sectionLabel}>Live Selfie</Text>
+
+              {/* Selfie photo */}
+              <TouchableOpacity
+                style={[kycStyles.photoBtn, selfieBase64 && kycStyles.photoBtnDone]}
+                onPress={() => setCameraFor('selfie')}
+              >
+                {selfieBase64 ? (
+                  <>
+                    <Image source={{ uri: `data:image/jpeg;base64,${selfieBase64}` }} style={kycStyles.photoPreview} />
+                    <View style={kycStyles.photoBtnInner}>
+                      <Ionicons name="checkmark-circle" size={20} color={COLORS.success} />
+                      <Text style={[kycStyles.photoBtnText, { color: COLORS.success }]}>Selfie captured</Text>
+                      <Text style={kycStyles.photoHint}>Tap to retake</Text>
+                    </View>
+                  </>
+                ) : (
+                  <View style={kycStyles.photoBtnInner}>
+                    <Ionicons name="person-circle-outline" size={28} color={COLORS.purple} />
+                    <Text style={kycStyles.photoBtnText}>Take Live Selfie</Text>
+                    <Text style={kycStyles.photoHint}>Face the front camera in good lighting</Text>
                   </View>
                 )}
               </TouchableOpacity>
@@ -509,6 +556,7 @@ const kycStyles = StyleSheet.create({
     borderWidth: 1, borderColor: COLORS.grayBorder, borderRadius: 12,
     padding: 14, fontSize: 15, color: COLORS.black, marginBottom: 14,
     backgroundColor: COLORS.offWhite,
+    letterSpacing: 0, // Android placeholder spacing quirk — explicit 0 kills fallback spacing
   },
   photoBtn: {
     borderWidth: 1.5, borderColor: COLORS.grayBorder, borderStyle: 'dashed',

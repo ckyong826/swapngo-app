@@ -7,6 +7,8 @@ export const loginSchema = z.object({
 
 export const registerSchema = z.object({
   email: z.string().email('Invalid email address'),
+  username: z.string().min(3, 'Username must be at least 3 characters'),
+  phone_number: z.string().regex(/^01\d{7,9}$/, 'Enter a valid Malaysian number, e.g. 0123456789'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   confirmPassword: z.string(),
   pin: z.string().regex(/^\d{4}$/, 'PIN must be exactly 4 digits'),

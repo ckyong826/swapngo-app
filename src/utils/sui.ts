@@ -1,7 +1,7 @@
-const SUI_EXPLORER = process.env.EXPO_PUBLIC_SUI_EXPLORER_URL ?? 'https://suiexplorer.com';
+const SUI_EXPLORER = process.env.EXPO_PUBLIC_SUI_EXPLORER_URL ?? 'https://suiscan.xyz/testnet';
 
 export function suiExplorerTxUrl(hash: string): string {
-  return `${SUI_EXPLORER}/txblock/${hash}`;
+  return `${SUI_EXPLORER}/tx/${hash}`;
 }
 
 export function isValidSuiAddress(address: string): boolean {

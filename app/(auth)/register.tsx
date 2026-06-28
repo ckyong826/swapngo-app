@@ -26,7 +26,9 @@ export default function RegisterScreen() {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = ({ email, password, pin }: RegisterFormData) => register({ email, password, pin });
+  const onSubmit = ({ email, username, phone_number, password, pin }: RegisterFormData) =>
+    // ponytail: MY-only, strip leading 0 and prepend +60 for backend e164
+    register({ email, username, phone_number: '+60' + phone_number.replace(/^0/, ''), password, pin });
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -62,6 +64,34 @@ export default function RegisterScreen() {
                     value={field.value}
                     onChangeText={field.onChange}
                     error={errors.email?.message}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="username"
+                render={({ field }) => (
+                  <Input
+                    label="Username"
+                    placeholder="Your username"
+                    autoCapitalize="none"
+                    value={field.value}
+                    onChangeText={field.onChange}
+                    error={errors.username?.message}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="phone_number"
+                render={({ field }) => (
+                  <Input
+                    label="Phone Number"
+                    placeholder="0123456789"
+                    keyboardType="phone-pad"
+                    value={field.value}
+                    onChangeText={field.onChange}
+                    error={errors.phone_number?.message}
                   />
                 )}
               />

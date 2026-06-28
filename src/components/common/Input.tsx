@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: COLORS.black,
     fontWeight: '400',
+    letterSpacing: 0, // ponytail: Android placeholder spacing quirk — explicit 0 kills fallback spacing
   },
   eye: { padding: 4 },
   rightEl: { marginLeft: 8 },

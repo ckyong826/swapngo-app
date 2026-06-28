@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, StyleSheet, Keyboard, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '@/components/common/Button';
@@ -21,6 +21,7 @@ export function UnlockOverlay() {
   const submit = async () => {
     setBusy(true);
     setError('');
+    Keyboard.dismiss();
     try {
       await authApi.verifyPin(pin);
       setUnlocked(true);
@@ -32,9 +33,14 @@ export function UnlockOverlay() {
     }
   };
 
+  // Auto-submit once 4 digits are in (skip while a verify is in flight).
+  useEffect(() => {
+    if (pin.length === 4 && !busy) submit();
+  }, [pin]);
+
   return (
     <SafeAreaView style={styles.overlay}>
-      <View style={styles.body}>
+      <Pressable style={styles.body} onPress={Keyboard.dismiss}>
         <View style={styles.iconCircle}>
           <Ionicons name="lock-closed" size={32} color={COLORS.white} />
         </View>
@@ -54,7 +60,7 @@ export function UnlockOverlay() {
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <Button title="Unlock" onPress={submit} loading={busy} disabled={pin.length !== 4} />
         <Button title="Log out" onPress={logout} variant="ghost" />
-      </View>
+      </Pressable>
     </SafeAreaView>
   );
 }

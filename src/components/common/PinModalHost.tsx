@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Keyboard, Pressable } from 'react-native';
 import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/common/Button';
 import { usePinStore } from '@/stores/pin.store';
@@ -18,9 +18,17 @@ export function PinModalHost() {
     if (visible) setPin('');
   }, [visible]);
 
+  // Auto-submit once 4 digits are in.
+  useEffect(() => {
+    if (visible && pin.length === 4) {
+      Keyboard.dismiss();
+      submitPin(pin);
+    }
+  }, [pin, visible]);
+
   return (
     <Modal visible={visible} onClose={cancelPin} title="Enter PIN">
-      <View style={styles.body}>
+      <Pressable style={styles.body} onPress={Keyboard.dismiss}>
         <Text style={styles.hint}>Enter your 4-digit PIN to authorise this transaction.</Text>
         <TextInput
           style={styles.input}
@@ -34,7 +42,7 @@ export function PinModalHost() {
           placeholderTextColor={COLORS.gray}
         />
         <Button title="Confirm" onPress={() => submitPin(pin)} disabled={pin.length !== 4} />
-      </View>
+      </Pressable>
     </Modal>
   );
 }

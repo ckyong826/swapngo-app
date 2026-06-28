@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { walletApi } from '@/api/wallet.api';
 import { usePriceSocket } from './usePriceSocket';
-import { WalletInfo } from '@/types/wallet.types';
 
 export function useWallet() {
   const { prices } = usePriceSocket();
@@ -12,19 +11,6 @@ export function useWallet() {
     staleTime: 30_000,
   });
 
-  const walletWithPrices: WalletInfo | undefined = query.data
-    ? {
-        ...query.data,
-        balances: (query.data.balances ?? []).map((b) => ({
-          ...b,
-          value_myr: (prices[b.token] ?? 1) * b.amount,
-        })),
-        total_value_myr: (query.data.balances ?? []).reduce(
-          (sum, b) => sum + (prices[b.token] ?? 1) * b.amount,
-          0
-        ),
-      }
-    : undefined;
-
-  return { ...query, data: walletWithPrices, prices };
+  // Balances/values come straight from backend response — no frontend recalc.
+  return { ...query, prices };
 }
