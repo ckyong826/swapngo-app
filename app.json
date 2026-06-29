@@ -41,12 +41,6 @@
       "expo-router",
       "expo-secure-store",
       [
-        "expo-notifications",
-        {
-          "enableBackgroundRemoteNotifications": false
-        }
-      ],
-      [
         "expo-camera",
         {
           "cameraPermission": "Allow Swap N Go to access your camera to scan QR codes."
