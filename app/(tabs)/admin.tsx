@@ -5,6 +5,7 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Alert,
   RefreshControl,
   ActivityIndicator,
@@ -12,6 +13,9 @@ import {
   Modal,
   Image,
   ScrollView,
+  KeyboardAvoidingView,
+  Keyboard,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -263,43 +267,52 @@ export default function AdminScreen() {
 
       {/* Reject modal */}
       <Modal visible={!!rejectTarget} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalCard}>
-            <Text style={styles.modalTitle}>Reject KYC</Text>
-            <Text style={styles.modalSub}>
-              Rejecting {rejectTarget?.full_name}. Please provide a reason.
-            </Text>
-            <TextInput
-              style={styles.remarksInput}
-              placeholder="Rejection reason..."
-              placeholderTextColor={COLORS.gray}
-              value={remarks}
-              onChangeText={setRemarks}
-              multiline
-              numberOfLines={3}
-            />
-            <View style={styles.modalActions}>
-              <TouchableOpacity
-                style={[styles.modalBtn, styles.modalCancelBtn]}
-                onPress={() => setRejectTarget(null)}
-                disabled={rejectMut.isPending}
-              >
-                <Text style={styles.modalCancelText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalBtn, styles.modalRejectBtn]}
-                onPress={onRejectConfirm}
-                disabled={rejectMut.isPending}
-              >
-                {rejectMut.isPending ? (
-                  <ActivityIndicator size="small" color={COLORS.white} />
-                ) : (
-                  <Text style={styles.modalRejectText}>Confirm Reject</Text>
-                )}
-              </TouchableOpacity>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.modalOverlay}>
+              <TouchableWithoutFeedback>
+                <View style={styles.modalCard}>
+                  <Text style={styles.modalTitle}>Reject KYC</Text>
+                  <Text style={styles.modalSub}>
+                    Rejecting {rejectTarget?.full_name}. Please provide a reason.
+                  </Text>
+                  <TextInput
+                    style={styles.remarksInput}
+                    placeholder="Rejection reason..."
+                    placeholderTextColor={COLORS.gray}
+                    value={remarks}
+                    onChangeText={setRemarks}
+                    multiline
+                    numberOfLines={3}
+                  />
+                  <View style={styles.modalActions}>
+                    <TouchableOpacity
+                      style={[styles.modalBtn, styles.modalCancelBtn]}
+                      onPress={() => setRejectTarget(null)}
+                      disabled={rejectMut.isPending}
+                    >
+                      <Text style={styles.modalCancelText}>Cancel</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.modalBtn, styles.modalRejectBtn]}
+                      onPress={onRejectConfirm}
+                      disabled={rejectMut.isPending}
+                    >
+                      {rejectMut.isPending ? (
+                        <ActivityIndicator size="small" color={COLORS.white} />
+                      ) : (
+                        <Text style={styles.modalRejectText}>Confirm Reject</Text>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
             </View>
-          </View>
-        </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   );

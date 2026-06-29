@@ -13,6 +13,7 @@ export interface TransactionRecord {
   created_at: string;
   updated_at: string;
   recipient?: string;
+  direction?: 'sent' | 'received';
   from_token?: string;
   to_token?: string;
 }

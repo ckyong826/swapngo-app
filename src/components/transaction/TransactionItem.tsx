@@ -11,6 +11,7 @@ type IoniconName = keyof typeof Ionicons.glyphMap;
 
 const TYPE_ICONS: Record<string, IoniconName> = {
   transfer: 'arrow-up-outline',
+  receive: 'arrow-down-outline',
   swap: 'swap-horizontal-outline',
   deposit: 'arrow-down-outline',
   withdrawal: 'arrow-up-circle-outline',
@@ -18,6 +19,7 @@ const TYPE_ICONS: Record<string, IoniconName> = {
 
 const TYPE_BG: Record<string, string> = {
   transfer: COLORS.purpleDim,
+  receive: '#D1FAE5',
   swap: COLORS.purpleDim,
   deposit: '#D1FAE5',
   withdrawal: '#FEF3C7',
@@ -25,6 +27,7 @@ const TYPE_BG: Record<string, string> = {
 
 const TYPE_ICON_COLOR: Record<string, string> = {
   transfer: COLORS.purple,
+  receive: '#059669',
   swap: COLORS.purple,
   deposit: '#059669',
   withdrawal: '#D97706',
@@ -32,6 +35,7 @@ const TYPE_ICON_COLOR: Record<string, string> = {
 
 const TYPE_LABELS: Record<string, string> = {
   transfer: 'Send',
+  receive: 'Receive',
   swap: 'Swap',
   deposit: 'Deposit',
   withdrawal: 'Withdraw',
@@ -42,9 +46,11 @@ interface Props {
 }
 
 export function TransactionItem({ item }: Props) {
-  const iconName = TYPE_ICONS[item.type] ?? 'ellipse-outline';
-  const bg = TYPE_BG[item.type] ?? COLORS.purpleDim;
-  const iconColor = TYPE_ICON_COLOR[item.type] ?? COLORS.purple;
+  // A received transfer renders as its own "receive" style, not "Send".
+  const key = item.type === 'transfer' && item.direction === 'received' ? 'receive' : item.type;
+  const iconName = TYPE_ICONS[key] ?? 'ellipse-outline';
+  const bg = TYPE_BG[key] ?? COLORS.purpleDim;
+  const iconColor = TYPE_ICON_COLOR[key] ?? COLORS.purple;
 
   return (
     <TouchableOpacity
@@ -56,7 +62,7 @@ export function TransactionItem({ item }: Props) {
         <Ionicons name={iconName} size={20} color={iconColor} />
       </View>
       <View style={styles.info}>
-        <Text style={styles.type}>{TYPE_LABELS[item.type] ?? item.type}</Text>
+        <Text style={styles.type}>{TYPE_LABELS[key] ?? item.type}</Text>
         <Text style={styles.time}>{formatRelativeTime(item.created_at)}</Text>
       </View>
       <View style={styles.right}>

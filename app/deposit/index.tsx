@@ -18,6 +18,7 @@ import { TokenIcon } from '@/components/common/TokenIcon';
 import { depositSchema, DepositFormData } from '@/utils/validation';
 import { useInitiateDeposit } from '@/hooks/useDeposit';
 import { usePinStore } from '@/stores/pin.store';
+import { KYCGateBanner } from '@/components/common/KYCGateBanner';
 import { COLORS } from '@/utils/constants';
 
 export default function DepositScreen() {
@@ -38,6 +39,7 @@ export default function DepositScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
+      <KYCGateBanner>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
@@ -98,6 +100,7 @@ export default function DepositScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      </KYCGateBanner>
     </SafeAreaView>
   );
 }

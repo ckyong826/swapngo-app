@@ -24,6 +24,7 @@ export interface TransferInitiateRequest {
 export interface TransferRecord {
   id: string;
   status: string;
+  direction: 'sent' | 'received';
   recipient: string;
   token: string;
   amount: number;
@@ -43,6 +44,7 @@ export interface DepositRecord {
   status: string;
   amount_myr: number;
   myrc_minted?: number;
+  sui_tx_hash?: string;
   billplz_payment_url?: string;
   error_message?: string;
   created_at: string;

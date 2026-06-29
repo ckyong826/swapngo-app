@@ -21,6 +21,7 @@ export default function DepositStatusScreen() {
         <View style={styles.card}>
           <AsyncStatusPoller
             status={data?.status as any}
+            suiTxHash={data?.sui_tx_hash}
             errorMessage={data?.error_message}
             createdAt={data?.created_at}
             isLoading={isLoading}

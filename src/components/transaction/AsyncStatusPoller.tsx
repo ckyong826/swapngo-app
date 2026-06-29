@@ -46,7 +46,7 @@ export function AsyncStatusPoller({
         <View style={styles.pulseCircle}>
           <ActivityIndicator size="large" color={COLORS.purple} />
         </View>
-        <StatusBadge status={status} />
+        <StatusBadge status={status} style={styles.badgeCenter} />
         <Text style={styles.title}>Processing on SUI Blockchain</Text>
         <Text style={styles.subtitle}>
           Your transaction is being confirmed. This usually takes 2–10 seconds.
@@ -64,7 +64,7 @@ export function AsyncStatusPoller({
         <View style={styles.successCircle}>
           <Ionicons name="checkmark-circle" size={48} color="#059669" />
         </View>
-        <StatusBadge status="completed" />
+        <StatusBadge status="completed" style={styles.badgeCenter} />
         <Text style={styles.title}>Transaction Complete</Text>
         {suiTxHash ? (
           <TouchableOpacity
@@ -90,7 +90,7 @@ export function AsyncStatusPoller({
       <View style={styles.errorCircle}>
         <Ionicons name="close-circle" size={48} color="#DC2626" />
       </View>
-      <StatusBadge status="failed" />
+      <StatusBadge status="failed" style={styles.badgeCenter} />
       <Text style={styles.title}>Transaction Failed</Text>
       {errorMessage ? (
         <Text style={styles.errorMsg}>{errorMessage}</Text>
@@ -106,6 +106,7 @@ export function AsyncStatusPoller({
 
 const styles = StyleSheet.create({
   center: { alignItems: 'center', paddingVertical: 32, gap: 12 },
+  badgeCenter: { alignSelf: 'center' },
   pulseCircle: {
     width: 80,
     height: 80,

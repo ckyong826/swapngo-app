@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { FsmStatus } from '@/types/fsm.types';
 import { COLORS } from '@/utils/constants';
 
@@ -13,12 +13,13 @@ const CONFIG: Record<FsmStatus, { label: string; bg: string; text: string }> = {
 interface Props {
   status: FsmStatus;
   size?: 'sm' | 'md';
+  style?: StyleProp<ViewStyle>;
 }
 
-export function StatusBadge({ status, size = 'md' }: Props) {
+export function StatusBadge({ status, size = 'md', style }: Props) {
   const cfg = CONFIG[status] ?? CONFIG.pending;
   return (
-    <View style={[styles.badge, { backgroundColor: cfg.bg }, size === 'sm' && styles.sm]}>
+    <View style={[styles.badge, { backgroundColor: cfg.bg }, size === 'sm' && styles.sm, style]}>
       <Text style={[styles.text, { color: cfg.text }, size === 'sm' && styles.textSm]}>
         {cfg.label}
       </Text>
