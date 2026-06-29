@@ -13,6 +13,18 @@ import { COLORS } from '@/utils/constants';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { PinModalHost } from '@/components/common/PinModalHost';
 import { UnlockOverlay } from '@/components/common/UnlockOverlay';
+import * as Notifications from 'expo-notifications';
+
+// Show OS-level banner even while the app is foregrounded, so transaction
+// status pushes from the WS are visible without leaving the screen.
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowBanner: true,
+    shouldShowList: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 function Toast() {
   const toast = useUIStore((s) => s.toast);
