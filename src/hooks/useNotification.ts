@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import * as Notifications from 'expo-notifications';
 import { wsService, WsNotification } from '@/services/websocket.service';
 import { useUIStore } from '@/stores/ui.store';
 import { kycKeys } from '@/hooks/useKYC';
@@ -32,10 +31,6 @@ export function useNotification(onNotification?: (n: WsNotification) => void) {
   const qc = useQueryClient();
 
   useEffect(() => {
-    Notifications.requestPermissionsAsync();
-  }, []);
-
-  useEffect(() => {
     const unsub = wsService.addNotificationListener((notification) => {
       // Call optional custom handler
       onNotificationRef.current?.(notification);
@@ -45,10 +40,6 @@ export function useNotification(onNotification?: (n: WsNotification) => void) {
         const isFailure = notification.type.endsWith('_FAILED') || notification.type === 'KYC_REJECTED';
         const message = formatter(notification);
         showToast(message, isFailure ? 'error' : 'success');
-        Notifications.scheduleNotificationAsync({
-          content: { title: 'Swap N Go', body: message },
-          trigger: null,
-        });
       }
 
       if (notification.type.endsWith('_COMPLETED') || notification.type.endsWith('_SUCCESS')) {

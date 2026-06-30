@@ -22,7 +22,8 @@
       "Bash(cd \"d:/UTM folder/FYP/Swap N Go/swapngo-backend\" && grep -rni \"pin\" --include=*.go internal/ | grep -iE \"invalid|incorrect|wrong|verify|mismatch|401|403|StatusUnauth|StatusForbidden\" | head -40)",
       "Read(//d/UTM folder/FYP/Swap N Go/swapngo-backend/**)",
       "Bash(cd \"d:/UTM folder/FYP/Swap N Go/swapngo-backend\" && cat internal/bizs/pin.go && echo \"=== HANDLE ===\" && grep -rn \"func Handle\" internal/utils/ )",
-      "Bash(cd \"d:/UTM folder/FYP/Swap N Go/swapngo-backend\" && grep -rn \"func Handle\" --include=*.go . && echo \"===\" && grep -rn \"func Handle\" -A40 pkg/utils/*.go 2>/dev/null | grep -iE \"status|http|err\" | head)"
+      "Bash(cd \"d:/UTM folder/FYP/Swap N Go/swapngo-backend\" && grep -rn \"func Handle\" --include=*.go . && echo \"===\" && grep -rn \"func Handle\" -A40 pkg/utils/*.go 2>/dev/null | grep -iE \"status|http|err\" | head)",
+      "Bash(npm uninstall *)"
     ]
   }
 }
